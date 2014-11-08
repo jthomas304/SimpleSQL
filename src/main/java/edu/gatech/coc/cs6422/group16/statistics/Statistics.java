@@ -40,8 +40,9 @@ public class Statistics
         System.out.println("Processing time: " + this.full.difference() + " ms");
         System.out.println("\tProcessing time parse: " + this.parse.difference() + " ms");
         System.out.println("\tProcessing time validation: " + this.validation.difference() + " ms");
-        System.out.println("\tProcessing time optimization: " + this.optimization.difference() + " ms");
         System.out.println("\tProcessing time treeGeneration: " + this.treeGeneration.difference() + " ms");
+        System.out.println("\tProcessing time optimization: " + this.optimization.difference() + " ms");
+
 
         // find best TreePlan:
         TreeStatistics best = Collections.min(this.statistics);
@@ -53,19 +54,23 @@ public class Statistics
             {
                 SwingRelationAlgebraTree.showInDialog(best.getTree(), "Best tree");
             }
+
             if (config.isShowVisualWorstTree())
             {
                 SwingRelationAlgebraTree.showInDialog(worst.getTree(), "Worst tree");
             }
+
         }
 
         System.out.println("-----");
         System.out.println("Cost of best plan: " + best.getCost());
         System.out.println("Best plan: " + best.getTreeAsString());
         System.out.println("-----");
+        /*
         System.out.println("Cost of worst plan: " + worst.getCost());
         System.out.println("Worst plan: " + worst.getTreeAsString());
         System.out.println("-----");
+        */
         System.out.println("Number of trees: " + this.statistics.size());
         System.out.println("-----");
         if (config.isShowAllTrees())

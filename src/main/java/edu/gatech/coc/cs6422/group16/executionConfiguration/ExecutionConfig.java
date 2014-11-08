@@ -159,8 +159,10 @@ public class ExecutionConfig
         this.showVisualBestTree = true;
         this.showVisualFirstTree = true;
         this.showVisualWorstTree = true;
-        this.showCostsInVisualTree = false;
-        this.showVisualTrees = false;
+        //this.showCostsInVisualTree = false;
+        //this.showVisualTrees = false;
+        this.showCostsInVisualTree = true;
+        this.showVisualTrees = true;
         this.showAllTrees = false;
         this.enableHeuristics = true;
         this.setExecutionMode(ExecutionMode.FULL);

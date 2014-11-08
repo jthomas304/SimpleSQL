@@ -171,8 +171,7 @@ public class QueryParser
         ExecutionConfig config = ExecutionConfig.getInstance();
 
         List<RelationalAlgebraTree> allTrees = new ArrayList<>();
-        List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes,
-                config.getNumberOfTrees());
+        List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes, config.getNumberOfTrees());
 
         // Convert all the possible relation trees into full-fledged relation-algebra-trees:
         for (RelationalAlgebraTree singleTree : possibleRelationTrees)
@@ -187,6 +186,18 @@ public class QueryParser
 
             allTrees.add(newRoot);
         }
+
+        /*
+        RelationalAlgebraTree newRoot = projectNode.copyNode();
+
+        // the deepest node has to be "refound":
+        RelationalAlgebraTree newCurrentNode = RelationalAlgebraTree.findDeepestNode(newRoot);
+
+        // just add the relation-tree to the deepest node, done!
+        newCurrentNode.addChild(possibleRelationTrees.get(0));
+
+        allTrees.add(newRoot);
+        */
         stats.stop(TimerType.TREE_GENERATION);
 
         return allTrees;

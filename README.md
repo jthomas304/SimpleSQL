@@ -1,4 +1,3 @@
-Test
 Project Overview
 =======
 This project has been developed as part of the class "CS 6422: Database System Implementation" at GeorgiaTech in Fall 2013 with professor Liu.

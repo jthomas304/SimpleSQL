@@ -68,21 +68,29 @@ public class TreeGenerator
         {
             // "relations.size() - 1" because of n leave nodes for n-1 intermediate nodes!
             List<RelationalAlgebraTree> treeNodes = generateTrees(relations.size() - 1);
-            List<List<RelationNode>> permutations = permute(relations);
 
+            List<List<RelationNode>> permutations = permute(relations);
+            /*
             if (permutationK >= 1)
             {
                 treeNodes = treeNodes.subList(0, Math.min(treeK, treeNodes.size()));
                 permutations = permutations.subList(0, Math.min(permutationK, permutations.size()));
             }
+            */
             for (RelationalAlgebraTree root : treeNodes)
             {
+
                 for (List<RelationNode> permutation : permutations)
                 {
                     RelationalAlgebraTree copyRoot = root.copyNode();
                     fillInLeaves(new LinkedList<>(permutation), copyRoot);
                     trees.add(copyRoot);
                 }
+                /*
+                RelationalAlgebraTree copyRoot = root.copyNode();
+                fillInLeaves(new LinkedList<>(permutations.get(0)), copyRoot);
+                trees.add(copyRoot);
+                */
             }
         }
         else if (relations.size() == 1)

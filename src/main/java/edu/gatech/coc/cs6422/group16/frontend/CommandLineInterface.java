@@ -18,7 +18,7 @@ public class CommandLineInterface
     public static Operations StringToOperation(String op)
     {
         Operations mode;
-        if (op.startsWith("select"))
+        if (op.startsWith("select") || op.startsWith("Select") || op.startsWith("SELECT"))
         {
             mode = Operations.STRING_QUERY;
         }

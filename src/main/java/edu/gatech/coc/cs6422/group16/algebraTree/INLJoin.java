@@ -5,7 +5,7 @@ import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
 
-public class JoinNode extends RelationalAlgebraTree
+public class INLJoin extends RelationalAlgebraTree
 {
     private Comparison comparison;
 
@@ -13,7 +13,7 @@ public class JoinNode extends RelationalAlgebraTree
 
     private QualifiedField condition2;
 
-    public JoinNode(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
+    public INLJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
     {
         this.condition1 = condition1;
         this.condition2 = condition2;
@@ -25,16 +25,15 @@ public class JoinNode extends RelationalAlgebraTree
     {
         QualifiedField newCond1 = this.condition1.copyNode();
         QualifiedField newCond2 = this.condition2.copyNode();
-        return super.copyFields(new JoinNode(newCond1, this.comparison, newCond2));
+        return super.copyFields(new JoinAsSelectNode(newCond1, this.comparison, newCond2));
     }
 
     @Override
     public double evaluateCost(List<Double> childrenCost)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return (childrenCost.get(0) * childrenCost.get(1)) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2));
+        // TODO: Formula needs functions not created yet
+        return 0;
     }
 
     @Override
@@ -43,11 +42,11 @@ public class JoinNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "INL \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
         }
         else
         {
-            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "INL \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
         }
     }
 
@@ -55,15 +54,15 @@ public class JoinNode extends RelationalAlgebraTree
     public boolean validate(List<RelationNode> relationNodes)
     {
         if (this.condition1.validate(relationNodes) && this.condition2.validate(
-                relationNodes) && this.getChildCount() == 2)
+                relationNodes) && this.getChildCount() == 1)
         {
             return true;
         }
         else
         {
-            if (this.getChildCount() != 2)
+            if (this.getChildCount() != 1)
             {
-                System.err.println("Childcount for JoinNode invalid: " + this.getChildCount());
+                System.err.println("Childcount for NLJoin invalid: " + this.getChildCount());
             }
             return false;
         }
@@ -73,9 +72,8 @@ public class JoinNode extends RelationalAlgebraTree
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        String s2 = "(" + this.getChildren().get(1).toString() + ")";
-        return s1 + "\u2a1d{" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
-                "}" + s2;
+        return "INL \u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+                ")" + s1;
     }
 
     public Comparison getComparison()
@@ -108,14 +106,8 @@ public class JoinNode extends RelationalAlgebraTree
         this.condition2 = condition2;
     }
 
-    public JoinAsSelectNode toJoinAsSelectNode()
+    public JoinNode toJoinNode()
     {
-        return new JoinAsSelectNode(condition1, comparison, condition2);
+        return new JoinNode(condition1, comparison, condition2);
     }
-
-    public BNLJoin toBNLJoin() { return new BNLJoin(condition1, comparison, condition2); }
-
-    public INLJoin toINLJoin() { return new INLJoin(condition1, comparison, condition2); }
-
-    public MJoin toMJoin() { return new MJoin(condition1, comparison, condition2); }
 }
