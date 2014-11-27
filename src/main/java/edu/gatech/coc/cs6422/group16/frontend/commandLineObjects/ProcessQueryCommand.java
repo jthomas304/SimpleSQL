@@ -2,6 +2,7 @@ package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
 import edu.gatech.coc.cs6422.group16.algebraTree.*;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.heuristics.CartesianToJoin;
 import edu.gatech.coc.cs6422.group16.heuristics.PushSelectionDown;
@@ -108,6 +109,10 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
 
                         }
                         trees.addAll(partialTree);
+                        for (RelationalAlgebraTree aTree : partialTree) {
+                            stat.addQueryTree(aTree);
+                        }
+
                     }
                 }
 
@@ -116,7 +121,6 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 PushSelectionDown.pushSelectionDown(singleTree);
                 CartesianToJoin.cartesianToJoin(singleTree);
 */
-                //TODO: Rearrange joins to get most optimal order
 
                 /*
                 for (int i = 0; i < 3; i++) {
@@ -175,7 +179,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
     }
 
     @Override
-    public void execute()
+    public void execute(UIWindow window)
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
 
@@ -213,6 +217,8 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
             */
 
             stat.stop(TimerType.FULL);
+            stat.updateUI(window);
+            stat.getBestTree(window);
             stat.print();
         }
 

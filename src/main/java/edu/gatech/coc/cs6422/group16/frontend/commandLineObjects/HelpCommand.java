@@ -1,5 +1,6 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.frontend.CommandLineInterface;
 
 import java.util.Map;
@@ -14,7 +15,7 @@ public class HelpCommand implements ICommandLineObject
     }
 
     @Override
-    public void execute()
+    public void execute(UIWindow window)
     {
 
     }

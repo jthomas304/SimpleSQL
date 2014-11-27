@@ -8,7 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class TextInBoxTreePane extends JComponent
+//public class TextInBoxTreePane extends JComponent
+public class TextInBoxTreePane extends JPanel
 {
     private final static int ARC_SIZE = 10;
 
@@ -22,6 +23,7 @@ public class TextInBoxTreePane extends JComponent
 
     public TextInBoxTreePane(TreeLayout<RelationalAlgebraTree> treeLayout)
     {
+
         this.treeLayout = treeLayout;
 
         Dimension size = treeLayout.getBounds().getBounds().getSize();
