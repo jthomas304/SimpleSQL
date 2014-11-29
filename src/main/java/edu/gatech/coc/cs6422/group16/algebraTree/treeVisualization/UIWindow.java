@@ -79,12 +79,15 @@ public class UIWindow extends JFrame {
         top.add(stats);
         top.add(Box.createGlue());
 
-        pane.add(Box.createVerticalStrut(25));
+        //pane.add(Box.createVerticalStrut(10));
         pane.add(top);
-        pane.add(Box.createGlue());
+        //pane.add(Box.createVerticalStrut(15));
+        pane.add(Box.createVerticalGlue());
 
         bot = new JPanel();
         bot.setLayout(new BoxLayout(bot, BoxLayout.Y_AXIS));
+        bot.setPreferredSize(new Dimension(694,700));
+        bot.setMaximumSize(new Dimension(694,700));
 
         statement = new JLabel("");
 
@@ -93,12 +96,16 @@ public class UIWindow extends JFrame {
         JPanel botStatement = new JPanel();
         botStatement.setLayout(new BoxLayout(botStatement, BoxLayout.X_AXIS));
 
-        //botStatement.add(Box.createGlue());
+        botStatement.add(Box.createGlue());
         botStatement.add(statement);
         botStatement.add(Box.createGlue());
+
+        bot.add(Box.createGlue());
         bot.add(botStatement);
 
+
         pane.add(bot);
+        //pane.add(Box.createVerticalStrut(10));
 
         //Display the window
         //pack();
@@ -108,11 +115,11 @@ public class UIWindow extends JFrame {
     public void updateStats(long tot, long parse, long valid, long tree, long opt) {
 
         //System.out.println(parse);
-        parTime.setText(Long.toString(parse)+"ms");
-        valTime.setText(Long.toString(valid)+"ms");
-        treeTime.setText(Long.toString(tree)+"ms");
-        optTime.setText(Long.toString(opt)+"ms");
-        totTime.setText(Long.toString(tot)+"ms");
+        parTime.setText(Long.toString(parse)+" ms");
+        valTime.setText(Long.toString(valid)+" ms");
+        treeTime.setText(Long.toString(tree)+" ms");
+        optTime.setText(Long.toString(opt)+" ms");
+        totTime.setText(Long.toString(tot)+" ms");
         revalidate();
     }
 
@@ -136,7 +143,9 @@ public class UIWindow extends JFrame {
 
             bot.add(botTree,1);
         }
+
         revalidate();
+        System.out.println(bot.size());
     }
 
     public void updateAlg(String alg) {

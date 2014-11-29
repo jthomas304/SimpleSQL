@@ -21,8 +21,8 @@ public class InputPanel extends JPanel implements ActionListener {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         textInput = new JTextPane();
-        textInput.setPreferredSize(new Dimension(300, 200));
-        textInput.setMaximumSize(new Dimension(300, 200));
+        textInput.setPreferredSize(new Dimension(300, 150));
+        textInput.setMaximumSize(new Dimension(300, 150));
         //textInput.setMaximumSize(new Dimension(600, 300));
 
         execute.addActionListener(this);
