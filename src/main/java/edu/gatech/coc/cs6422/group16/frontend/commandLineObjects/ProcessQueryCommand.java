@@ -93,7 +93,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                     getAllJoinTypes(newCopy, joinNodes);
 
 
-                                    System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
+                                    //System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
                                     //SwingRelationAlgebraTree.showInDialog(newCopy, "Tree");
                                     /*
                                     for (int wait = 0; wait < 1000; wait++) {
