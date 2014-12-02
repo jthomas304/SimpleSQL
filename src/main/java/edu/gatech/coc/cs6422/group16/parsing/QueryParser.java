@@ -65,6 +65,9 @@ public class QueryParser
             tree2.addChild(relationNodes.get(0));
             tree2.addChild(relationNodes.get(1));
 
+            System.out.println("Test 158 | Relation Nodes: " + relationNodes.get(0));
+            System.out.println("Test 158 | Relation Nodes: " + relationNodes.get(1));
+
             int i = 2;
             while (i < size)
             {
@@ -111,7 +114,6 @@ public class QueryParser
     {
         Statistics stats = Statistics.getInstance();
         stats.start(TimerType.PARSE);
-
         SimpleSQLLexer lexer = new SimpleSQLLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         SimpleSQLParser p = new SimpleSQLParser(tokens);
@@ -132,17 +134,24 @@ public class QueryParser
         SimpleSQLParser.SelectionsContext selections = t.getChild(SimpleSQLParser.SelectionsContext.class, 0);
 
         ProjectNode projectNode = ParseHelpers.parseProjections(projections);
+
+
         List<JoinNode> joinNodes = ParseHelpers.parseJoinNodes(selections);
+
         List<SelectNode> selectNodes = ParseHelpers.parseSelectNodes(selections);
         List<RelationNode> relationNodes = ParseHelpers.parseRelations(relations);
+        System.out.println("Test 154 | Relation Nodes: " + relationNodes);
+        System.out.println("Test 154 | SelectNodes: " + selectNodes);
 
         RelationalAlgebraTree currentNode = projectNode;
-
         for (SelectNode s : selectNodes)
         {
             currentNode.addChild(s);
             currentNode = s;
+            System.out.println(currentNode + "Test 155");
         }
+
+        //System.out.println("Test 168 | Current Nodes: " + currentNode);
 
         for (JoinNode j : joinNodes)
         {
@@ -150,14 +159,18 @@ public class QueryParser
             currentNode.addChild(n);
             currentNode = n;
         }
+
+        //System.out.println("168 | Current Node :" + currentNode);
         stats.stop(TimerType.PARSE);
 
         stats.start(TimerType.VALIDATION);
+
         // validation of the fields comes now:
         // build a fake-tree for validation with all the relations as leaves with cartesian-products in it:
         RelationalAlgebraTree validationTree = projectNode.copyNode();
-        BuildCartesianLeaveTree(validationTree, relationNodes);
 
+        BuildCartesianLeaveTree(validationTree, relationNodes);
+        System.out.println("Test 157 | Validation tree: " + validationTree);
         boolean valid = validationTree.validateTree(relationNodes);
         if (!valid)
         {
@@ -171,33 +184,24 @@ public class QueryParser
         ExecutionConfig config = ExecutionConfig.getInstance();
 
         List<RelationalAlgebraTree> allTrees = new ArrayList<>();
-        List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes, config.getNumberOfTrees());
+        List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes,
+                config.getNumberOfTrees());
 
         // Convert all the possible relation trees into full-fledged relation-algebra-trees:
         for (RelationalAlgebraTree singleTree : possibleRelationTrees)
         {
+            System.out.println("Test 160 | The current tree: " +singleTree);
             RelationalAlgebraTree newRoot = projectNode.copyNode();
-
+            //System.out.println("Test 160 | New Root: " + newRoot);
             // the deepest node has to be "refound":
             RelationalAlgebraTree newCurrentNode = RelationalAlgebraTree.findDeepestNode(newRoot);
-
+            //System.out.println("Test 160 | New Current Node: " + newCurrentNode);
             // just add the relation-tree to the deepest node, done!
             newCurrentNode.addChild(singleTree);
 
             allTrees.add(newRoot);
         }
-
-        /*
-        RelationalAlgebraTree newRoot = projectNode.copyNode();
-
-        // the deepest node has to be "refound":
-        RelationalAlgebraTree newCurrentNode = RelationalAlgebraTree.findDeepestNode(newRoot);
-
-        // just add the relation-tree to the deepest node, done!
-        newCurrentNode.addChild(possibleRelationTrees.get(0));
-
-        allTrees.add(newRoot);
-        */
+        System.out.println("Test 156| Size of all possible trees: " + allTrees.size());
         stats.stop(TimerType.TREE_GENERATION);
 
         return allTrees;

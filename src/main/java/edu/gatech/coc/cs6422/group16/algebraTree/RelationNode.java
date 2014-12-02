@@ -25,19 +25,26 @@ public class RelationNode extends RelationalAlgebraTree
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         return meta.GetRelationSize(this.relation);
+        //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
     }
-
+    @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        return meta.GetRelationSize(this.relation);
+        //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return this.getRelation() + "\n" + this.computeCost();
+            return this.getRelation() + "\n" + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return this.getRelation();
+            return this.getRelation() + "\n" + this.computeCost()+ " , " + this.computeSize();
         }
     }
 
@@ -47,6 +54,7 @@ public class RelationNode extends RelationalAlgebraTree
         if (RelationNodesIncludeRelation(relationNodes, this.relation))
         {
             MetaDataRepository meta = MetaDataRepository.GetInstance();
+            System.out.println(this.relation + " Test 29");
             if (meta.IsRelationValid(this.relation))
             {
                 return true;

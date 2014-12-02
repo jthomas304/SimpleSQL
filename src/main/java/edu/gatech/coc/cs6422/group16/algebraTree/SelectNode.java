@@ -36,17 +36,29 @@ public class SelectNode extends RelationalAlgebraTree
     }
 
     @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        if (this.comparison != Comparison.EQUAL) {
+            return childrenSize.get(0) / 3;
+        }
+        // formula: T(R) = T(S) / V(S, a)
+        return childrenSize.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field);
+    }
+
+    @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    this.computeCost();
+                    this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")";
+            return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
+                    this.computeCost()+ " , " + this.computeSize();
         }
     }
 

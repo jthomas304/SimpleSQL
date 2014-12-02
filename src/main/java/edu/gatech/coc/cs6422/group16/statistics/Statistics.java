@@ -2,7 +2,6 @@ package edu.gatech.coc.cs6422.group16.statistics;
 
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 
 import java.util.ArrayList;
@@ -35,54 +34,40 @@ public class Statistics
         statistics.add(new TreeStatistics(tree));
     }
 
-    public void updateUI(UIWindow window) {
-        window.updateStats(this.full.difference(), this.parse.difference(), this.validation.difference(), this.treeGeneration.difference(), this.optimization.difference());
-    }
-
-    public void getBestTree(UIWindow window) {
-        TreeStatistics best = Collections.min(this.statistics);
-        window.updateTree(SwingRelationAlgebraTree.showInJPanel(best.getTree()));
-        window.updateAlg(best.getTreeAsString());
-    }
-
-
     public void print()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         System.out.println("Processing time: " + this.full.difference() + " ms");
         System.out.println("\tProcessing time parse: " + this.parse.difference() + " ms");
         System.out.println("\tProcessing time validation: " + this.validation.difference() + " ms");
-        System.out.println("\tProcessing time treeGeneration: " + this.treeGeneration.difference() + " ms");
         System.out.println("\tProcessing time optimization: " + this.optimization.difference() + " ms");
-
+        System.out.println("\tProcessing time treeGeneration: " + this.treeGeneration.difference() + " ms");
 
         // find best TreePlan:
         TreeStatistics best = Collections.min(this.statistics);
         TreeStatistics worst = Collections.max(this.statistics);
-
+        config.setShowVisualTrees(true);
+        config.setShowVisualBestTree(true);
+        config.setShowVisualWorstTree(true);
         if (config.isShowVisualTrees())
         {
             if (config.isShowVisualBestTree())
             {
                 SwingRelationAlgebraTree.showInDialog(best.getTree(), "Best tree");
             }
-
             if (config.isShowVisualWorstTree())
             {
                 SwingRelationAlgebraTree.showInDialog(worst.getTree(), "Worst tree");
             }
-
         }
 
         System.out.println("-----");
         System.out.println("Cost of best plan: " + best.getCost());
         System.out.println("Best plan: " + best.getTreeAsString());
         System.out.println("-----");
-        /*
         System.out.println("Cost of worst plan: " + worst.getCost());
         System.out.println("Worst plan: " + worst.getTreeAsString());
         System.out.println("-----");
-        */
         System.out.println("Number of trees: " + this.statistics.size());
         System.out.println("-----");
         if (config.isShowAllTrees())

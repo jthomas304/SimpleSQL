@@ -12,6 +12,11 @@ public class JoinNode extends RelationalAlgebraTree
     private QualifiedField condition1;
 
     private QualifiedField condition2;
+    public JoinNode() {
+        this.condition1 = null;
+        this.condition2 = null;
+        this.comparison = null;
+    }
 
     public JoinNode(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
     {
@@ -33,21 +38,32 @@ public class JoinNode extends RelationalAlgebraTree
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return (childrenCost.get(0) * childrenCost.get(1)) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        //return (childrenCost.get(0) * childrenCost.get(1)) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        //        meta.GetDistinctValueOfAttribute(this.condition2));
+        double numBlock1 = meta.GetNumberBlock(this.condition1);
+        double numBlock2 = meta.GetNumberBlock(this.condition2);
+        return numBlock1 * numBlock2 / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2));
     }
-
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
+        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)));
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
         }
     }
 
@@ -113,11 +129,13 @@ public class JoinNode extends RelationalAlgebraTree
         return new JoinAsSelectNode(condition1, comparison, condition2);
     }
 
-    public BNLJoin toBNLJoin() { return new BNLJoin(condition1, comparison, condition2); }
-
-    public INLJoin toINLJoin() { return new INLJoin(condition1, comparison, condition2); }
-
-    public MJoin toMJoin() { return new MJoin(condition1, comparison, condition2); }
-
-    public HJoin toHJoin() { return new HJoin(condition1, comparison, condition2); }
+    public RelationalAlgebraTree toSpecificJoin(int k) {
+        if (k == 0) {
+            return new BNLJoin(condition1, comparison, condition2);
+        } else if (k == 1) {
+            return new IndexedNestedLoopJoin(condition1, comparison, condition2);
+        } else if (k == 2) {
+            return new MergeJoin(condition1, comparison, condition2);
+        } else return new HashJoin(condition1, comparison, condition2);
+    }
 }

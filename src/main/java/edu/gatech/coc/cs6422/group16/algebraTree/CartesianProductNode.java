@@ -17,18 +17,22 @@ public class CartesianProductNode extends RelationalAlgebraTree
     {
         return childrenCost.get(0) * childrenCost.get(1);
     }
-
+    @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        return childrenSize.get(0) * childrenSize.get(1);
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "x \n " + this.computeCost();
+            return "x \n " + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "x";
+            return "x \n" + this.computeCost();
         }
     }
 

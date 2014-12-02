@@ -15,6 +15,11 @@ public class TreeStatistics implements Comparable<TreeStatistics>
         this.tree = tree;
         this.treeAsString = tree.toString();
         this.cost = tree.computeCost();
+        System.out.println(
+                "Test 113: "
+                +"\n Tree: " + tree
+                +"\n Tree Children: " + tree.getChildren()
+                +"\n Cost: " + cost);
     }
 
     public double getCost()
@@ -39,7 +44,7 @@ public class TreeStatistics implements Comparable<TreeStatistics>
         return treeAsString;
     }
 
-    public void setCost(double cost)
+    public void setCost(int cost)
     {
         this.cost = cost;
     }

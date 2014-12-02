@@ -5,7 +5,10 @@ import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
 
-public class NLJoin extends RelationalAlgebraTree
+/**
+ * Created by thangnguyen on 11/18/14.
+ */
+public class MergeJoin extends JoinNode
 {
     private Comparison comparison;
 
@@ -13,7 +16,7 @@ public class NLJoin extends RelationalAlgebraTree
 
     private QualifiedField condition2;
 
-    public NLJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
+    public MergeJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
     {
         this.condition1 = condition1;
         this.condition2 = condition2;
@@ -32,24 +35,32 @@ public class NLJoin extends RelationalAlgebraTree
     public double evaluateCost(List<Double> childrenCost)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        // TODO: Formula needs functions not created yet
-        return 0;
+        double numBlock1 = meta.GetNumberBlock(this.condition1);
+        double numBlock2 = meta.GetNumberBlock(this.condition2);
+        return (double) (numBlock1*numBlock2 + numBlock1*Math.log(numBlock1) + numBlock2*Math.log(numBlock2));
     }
-
+    @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
+        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)));
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "Merge Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "Merge Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
         }
     }
-
     @Override
     public boolean validate(List<RelationNode> relationNodes)
     {
@@ -62,7 +73,7 @@ public class NLJoin extends RelationalAlgebraTree
         {
             if (this.getChildCount() != 1)
             {
-                System.err.println("Childcount for NLJoin invalid: " + this.getChildCount());
+                System.err.println("Childcount for JoinAsSelectNode invalid: " + this.getChildCount());
             }
             return false;
         }
@@ -110,4 +121,6 @@ public class NLJoin extends RelationalAlgebraTree
     {
         return new JoinNode(condition1, comparison, condition2);
     }
+
+
 }

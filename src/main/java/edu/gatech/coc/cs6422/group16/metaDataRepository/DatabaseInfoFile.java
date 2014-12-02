@@ -81,6 +81,7 @@ public class DatabaseInfoFile extends Files {
                             }
                         }
                         AttributeInfo.AttributeType attrType = AttributeInfo.AttributeType.valueOf(singleField[1].trim().toUpperCase());
+                        System.out.println("Test 121 - attributes of the file" + attrType);
                         if(attrType == null) {
                             String msg = "Error parsing line " + fileLineReader.getLineNumber() + " from database information file " + fileName + ": attribute type can't be recognized.";
                             throw new RuntimeException(msg);
@@ -88,6 +89,7 @@ public class DatabaseInfoFile extends Files {
                         attributeMap.get(relVector.elementAt(i)).add(new AttributeInfo(singleField[0].trim(), attrType, constraint));
                     }
                     i++;
+
                 }
                 if(i != parts.length) {
                     String msg = "Statistics file " + fileName + " has fewer number of attributes than indicated.";
@@ -124,6 +126,7 @@ public class DatabaseInfoFile extends Files {
     }
 
     public boolean IsRelationValid(String rel) {
+        System.out.println(relationSet + " Test 30- DatabaseInforFile-to check the relation is value or not");
         return relationSet.contains(rel);
     }
 

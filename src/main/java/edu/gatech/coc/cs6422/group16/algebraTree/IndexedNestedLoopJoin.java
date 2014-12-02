@@ -5,7 +5,10 @@ import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
 
-public class MJoin extends RelationalAlgebraTree
+/**
+ * Created by thangnguyen on 11/18/14.
+ */
+public class IndexedNestedLoopJoin extends JoinNode
 {
     private Comparison comparison;
 
@@ -13,7 +16,7 @@ public class MJoin extends RelationalAlgebraTree
 
     private QualifiedField condition2;
 
-    public MJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
+    public IndexedNestedLoopJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
     {
         this.condition1 = condition1;
         this.condition2 = condition2;
@@ -32,21 +35,34 @@ public class MJoin extends RelationalAlgebraTree
     public double evaluateCost(List<Double> childrenCost)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        // TODO: Formula needs functions not created yet
-        return 0;
+        double numBlock1 = meta.GetNumberBlock(this.condition1);
+        double numBlock2 = meta.GetNumberBlock(this.condition2);
+        double numTuple1 = meta.GetRelationSize(this.condition1.getRelation());
+        double numTuple2 = meta.GetRelationSize(this.condition2.getRelation());
+        double cost1 = (numBlock1 + numTuple1 * Math.log(numBlock1));
+        double cost2 = (numBlock1 + numTuple1 * Math.log(numBlock2));
+        return Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2);
     }
-
+    @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
+        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)));
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "M \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "INLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "M \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "INLJoin(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
         }
     }
 
@@ -62,7 +78,7 @@ public class MJoin extends RelationalAlgebraTree
         {
             if (this.getChildCount() != 1)
             {
-                System.err.println("Childcount for NLJoin invalid: " + this.getChildCount());
+                System.err.println("Childcount for JoinAsSelectNode invalid: " + this.getChildCount());
             }
             return false;
         }
@@ -72,7 +88,7 @@ public class MJoin extends RelationalAlgebraTree
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        return "M \u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+        return "\u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
                 ")" + s1;
     }
 
@@ -110,4 +126,7 @@ public class MJoin extends RelationalAlgebraTree
     {
         return new JoinNode(condition1, comparison, condition2);
     }
+
+
 }
+

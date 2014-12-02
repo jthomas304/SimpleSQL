@@ -1,12 +1,11 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 
 public class ShowOptionsCommand implements ICommandLineObject
 {
     @Override
-    public void execute(UIWindow window)
+    public void execute()
     {
         System.out.println(ExecutionConfig.getInstance().toString());
     }

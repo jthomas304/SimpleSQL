@@ -1,6 +1,5 @@
 package edu.gatech.coc.cs6422.group16.frontend;
 
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.frontend.commandLineObjects.*;
 
 import java.io.BufferedReader;
@@ -11,8 +10,6 @@ import java.util.Map;
 
 public class CommandLineInterface
 {
-    private UIWindow window;
-
     public enum Operations
     {
         STRING_QUERY, FILE_QUERY, EXIT, CHANGE_OPTIONS, SHOW_OPTIONS, NO_OPERATION, BATCH_MODE, HELP
@@ -21,7 +18,7 @@ public class CommandLineInterface
     public static Operations StringToOperation(String op)
     {
         Operations mode;
-        if (op.startsWith("select") || op.startsWith("Select") || op.startsWith("SELECT"))
+        if (op.startsWith("select"))
         {
             mode = Operations.STRING_QUERY;
         }
@@ -82,23 +79,17 @@ public class CommandLineInterface
 
     public void processCommandLine()
     {
-        window = new UIWindow(this);
-        window.pack();
-        window.setVisible(true);
-        window.setSize(700,1000);
-        window.setResizable(false);
-
         boolean alive = true;
         do
         {
             System.out.println("Enter your query:");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
             try
             {
                 System.out.print("> ");
                 String command = reader.readLine();
+                System.out.println(command);
                 alive = processString(command);
             }
             catch (IOException e)
@@ -125,7 +116,7 @@ public class CommandLineInterface
             {
                 ICommandLineObject commandObject = this.operationToObject.get(mode);
                 commandObject.setCommand(command);
-                commandObject.execute(window);
+                commandObject.execute();
             }
         }
         else

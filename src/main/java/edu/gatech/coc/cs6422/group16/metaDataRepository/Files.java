@@ -2,7 +2,6 @@ package edu.gatech.coc.cs6422.group16.metaDataRepository;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.LineNumberReader;
 
 /**
@@ -30,6 +29,7 @@ public class Files {
         try
         {
             fileReader = new FileReader(fileFullPath);
+            System.out.println(fileFullPath + " Test 54-Files class-File Full Path");
             fileLineReader = new LineNumberReader(fileReader);
         } catch (FileNotFoundException E)
         {

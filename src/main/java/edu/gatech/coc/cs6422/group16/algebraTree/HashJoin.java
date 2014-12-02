@@ -1,11 +1,18 @@
 package edu.gatech.coc.cs6422.group16.algebraTree;
 
+/**
+ * Created by thangnguyen on 11/18/14.
+ */
+
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
 
-public class HJoin extends RelationalAlgebraTree
+/**
+ * Created by thangnguyen on 11/18/14.
+ */
+public class HashJoin extends JoinNode
 {
     private Comparison comparison;
 
@@ -13,7 +20,7 @@ public class HJoin extends RelationalAlgebraTree
 
     private QualifiedField condition2;
 
-    public HJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
+    public HashJoin(QualifiedField condition1, Comparison comparison, QualifiedField condition2)
     {
         this.condition1 = condition1;
         this.condition2 = condition2;
@@ -32,21 +39,29 @@ public class HJoin extends RelationalAlgebraTree
     public double evaluateCost(List<Double> childrenCost)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        // TODO: Formula needs functions not created yet
-        return 0;
+        double numBlock1 = meta.GetNumberBlock(this.condition1);
+        double numBlock2 = meta.GetNumberBlock(this.condition2);
+        return 3 * (numBlock1 + numBlock2);
     }
-
+    @Override
+    public double evaluateSize(List<Double> childrenSize)
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)));
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "H \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "Hash Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.computeSize();
         }
         else
         {
-            return "H \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "Hash Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
         }
     }
 
@@ -62,7 +77,7 @@ public class HJoin extends RelationalAlgebraTree
         {
             if (this.getChildCount() != 1)
             {
-                System.err.println("Childcount for HJoin invalid: " + this.getChildCount());
+                System.err.println("Childcount for JoinAsSelectNode invalid: " + this.getChildCount());
             }
             return false;
         }
@@ -72,7 +87,7 @@ public class HJoin extends RelationalAlgebraTree
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        return "H \u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+        return "\u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
                 ")" + s1;
     }
 
@@ -110,4 +125,6 @@ public class HJoin extends RelationalAlgebraTree
     {
         return new JoinNode(condition1, comparison, condition2);
     }
+
+
 }
