@@ -118,4 +118,6 @@ public class JoinNode extends RelationalAlgebraTree
     public INLJoin toINLJoin() { return new INLJoin(condition1, comparison, condition2); }
 
     public MJoin toMJoin() { return new MJoin(condition1, comparison, condition2); }
+
+    public HJoin toHJoin() { return new HJoin(condition1, comparison, condition2); }
 }

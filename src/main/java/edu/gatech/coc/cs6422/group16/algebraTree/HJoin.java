@@ -42,11 +42,11 @@ public class HJoin extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "H \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
         }
         else
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "H \u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
         }
     }
 
@@ -72,7 +72,7 @@ public class HJoin extends RelationalAlgebraTree
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        return "\u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+        return "H \u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
                 ")" + s1;
     }
 

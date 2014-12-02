@@ -62,7 +62,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                         List<RelationalAlgebraTree> partialTree = new ArrayList<>();
 
 
-                        for (int k = 0; k < 3; k++) {
+                        for (int k = 0; k < 4; k++) {
 
                             if (j == 0) {
                                 RelationalAlgebraTree newCopy = singleTree.copyNode();
@@ -80,6 +80,9 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                 }
                                 else if (k == 2) {
                                     temp.replaceNode(temp.toMJoin());
+                                }
+                                else if (k == 3) {
+                                    temp.replaceNode(temp.toHJoin());
                                 }
                                 partialTree.add(newCopy);
                             }
