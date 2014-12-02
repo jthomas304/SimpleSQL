@@ -48,4 +48,23 @@ public class SwingRelationAlgebraTree
         TextInBoxTreePane panel = new TextInBoxTreePane(treeLayout);
         showInDialog(panel, title);
     }
+
+    public static TextInBoxTreePane showInJPanel(RelationalAlgebraTree root) {
+        RelationAlgebraTreeAsTreeLayout tree = new RelationAlgebraTreeAsTreeLayout(root);
+
+        // setup the tree layout configuration
+        double gapBetweenLevels = 50;
+        double gapBetweenNodes = 10;
+        DefaultConfiguration<RelationalAlgebraTree> configuration = new DefaultConfiguration<>(gapBetweenLevels,
+                gapBetweenNodes);
+
+        // create the NodeExtentProvider for TextInBox nodes
+        RelationAlgebraTreeNodeExtentProvider nodeExtentProvider = new RelationAlgebraTreeNodeExtentProvider();
+
+        // create the layout
+        TreeLayout<RelationalAlgebraTree> treeLayout = new TreeLayout<>(tree, nodeExtentProvider, configuration);
+
+        // Create a panel that draws the nodes and edges and show the panel
+        return new TextInBoxTreePane(treeLayout);
+    }
 }

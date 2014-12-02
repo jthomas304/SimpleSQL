@@ -3,6 +3,7 @@ package edu.gatech.coc.cs6422.group16.statistics;
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,16 @@ public class Statistics
     public void addQueryTree(RelationalAlgebraTree tree)
     {
         statistics.add(new TreeStatistics(tree));
+    }
+
+    public void updateUI(UIWindow window) {
+        window.updateStats(this.full.difference(), this.parse.difference(), this.validation.difference(), this.treeGeneration.difference(), this.optimization.difference());
+    }
+
+    public void getBestTree(UIWindow window) {
+        TreeStatistics best = Collections.min(this.statistics);
+        window.updateTree(SwingRelationAlgebraTree.showInJPanel(best.getTree()));
+        window.updateAlg(best.getTreeAsString());
     }
 
     public void print()

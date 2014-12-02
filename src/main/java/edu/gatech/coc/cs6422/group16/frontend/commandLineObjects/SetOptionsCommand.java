@@ -3,13 +3,14 @@ package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionMode;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 
 public class SetOptionsCommand implements ICommandLineObject
 {
     private String options;
 
     @Override
-    public void execute()
+    public void execute(UIWindow window)
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
 

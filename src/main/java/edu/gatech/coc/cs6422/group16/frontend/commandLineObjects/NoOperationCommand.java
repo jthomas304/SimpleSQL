@@ -1,9 +1,11 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
+
 public class NoOperationCommand implements ICommandLineObject
 {
     @Override
-    public void execute()
+    public void execute(UIWindow window)
     {
         System.err.println("Unrecognized command!");
     }
