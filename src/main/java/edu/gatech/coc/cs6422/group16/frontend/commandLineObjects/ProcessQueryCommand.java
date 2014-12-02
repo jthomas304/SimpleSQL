@@ -47,21 +47,30 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 }
                 */
 
-                List<RelationalAlgebraTree> cartNodes = new ArrayList<>();
-                getAllCartTypes(trees.get(0), cartNodes);
-                int numberOfJoins = cartNodes.size();
 
 
+
+                // Go through each table order permutation
                 for(int i = 0; i < numberOfRelationPermutations; i++) {
                     RelationalAlgebraTree singleTree = trees.get(i).copyNode();
                     PushSelectionDown.pushSelectionDown(singleTree);
                     CartesianToJoin.cartesianToJoin(singleTree);
 
+                    List<RelationalAlgebraTree> oriJoinNodes = new ArrayList<>();
+                    getAllJoinTypes(singleTree, oriJoinNodes);
+                    int numberOfJoins = oriJoinNodes.size();
+                    System.out.println(numberOfJoins);
+
+                    //SwingRelationAlgebraTree.showInDialog(singleTree, "Tree");
+
+                    List<RelationalAlgebraTree> partialTree = new ArrayList<>();
+
+                    trees.add(singleTree);
+                    // for each cartesian product node in the unoptimized algebra tree
                     for (int j = 0; j < numberOfJoins; j++) {
                         // k dependent on how many types of joins we implement
-                        List<RelationalAlgebraTree> partialTree = new ArrayList<>();
 
-
+                        int count = (int)(Math.pow(4,j));
                         for (int k = 0; k < 4; k++) {
 
                             if (j == 0) {
@@ -70,7 +79,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                 List<RelationalAlgebraTree> joinNodes = new ArrayList<>();
                                 getAllJoinTypes(newCopy, joinNodes);
 
-                                JoinNode temp = joinNodes.get(j).getCurrentNodeAs(JoinNode.class);
+                                JoinNode temp = joinNodes.get(0).getCurrentNodeAs(JoinNode.class);
 
                                 if (k == 0) {
                                     temp.replaceNode(temp.toBNLJoin());
@@ -84,17 +93,28 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                 else if (k == 3) {
                                     temp.replaceNode(temp.toHJoin());
                                 }
+                                //SwingRelationAlgebraTree.showInDialog(newCopy,"Tree" + Integer.toString(k));
                                 partialTree.add(newCopy);
                             }
                             else {
-                                int count = partialTree.size();
+                                //int count = partialTree.size();
                                 for (int l = 0; l < count; l++) {
                                     RelationalAlgebraTree newCopy = partialTree.get(l).copyNode();
                                     // get jth join
                                     List<RelationalAlgebraTree> joinNodes = new ArrayList<>();
                                     getAllJoinTypes(newCopy, joinNodes);
 
-                                    JoinNode temp = joinNodes.get(j).getCurrentNodeAs(JoinNode.class);
+
+                                    System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
+                                    //SwingRelationAlgebraTree.showInDialog(newCopy, "Tree");
+                                    /*
+                                    for (int wait = 0; wait < 1000; wait++) {
+
+                                    }
+                                    */
+
+
+                                    JoinNode temp = joinNodes.get(0).getCurrentNodeAs(JoinNode.class);
 
                                     if (k == 0) {
                                         temp.replaceNode(temp.toBNLJoin());
@@ -105,18 +125,36 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                     else if (k == 2) {
                                         temp.replaceNode(temp.toMJoin());
                                     }
-                                    partialTree.add(newCopy);
-                                    partialTree.remove(partialTree.get(l));
+                                    else if (k == 3) {
+                                        temp.replaceNode(temp.toHJoin());
+                                    }
+
+                                    partialTree.add(count, newCopy);
+                                    //partialTree.remove(partialTree.get(l));
+
+                                    /*
+                                    if ((j == numberOfJoins-1) && (k == count-1)) {
+                                        partialTree.remove(partialTree.get(l));
+                                    }
+                                    */
                                 }
                             }
 
                         }
-                        trees.addAll(partialTree);
-                        for (RelationalAlgebraTree aTree : partialTree) {
-                            stat.addQueryTree(aTree);
+
+                        if (j > 0) {
+                            for (int k = 0; k < count; k++) {
+                                partialTree.remove(partialTree.get(k));
+                            }
                         }
 
                     }
+                    trees.addAll(partialTree);
+                    /*
+                    for (RelationalAlgebraTree aTree : partialTree) {
+                        stat.addQueryTree(aTree);
+                    }
+                    */
                 }
 
 /*
@@ -143,9 +181,14 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 */
                 stat.stop(TimerType.OPTIMIZATION);
 
+
+
                 for(int i = 0; i < trees.size(); i++) {
+                    stat.addQueryTree(trees.get(i));
                     SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
                 }
+
+
             }
 
             /*

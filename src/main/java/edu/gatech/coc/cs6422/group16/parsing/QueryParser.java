@@ -173,6 +173,8 @@ public class QueryParser
         List<RelationalAlgebraTree> allTrees = new ArrayList<>();
         List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes, config.getNumberOfTrees());
 
+        //System.out.println(possibleRelationTrees.size());
+
         // Convert all the possible relation trees into full-fledged relation-algebra-trees:
         for (RelationalAlgebraTree singleTree : possibleRelationTrees)
         {

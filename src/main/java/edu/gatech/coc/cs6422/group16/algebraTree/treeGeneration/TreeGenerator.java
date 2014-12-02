@@ -3,6 +3,7 @@ package edu.gatech.coc.cs6422.group16.algebraTree.treeGeneration;
 import edu.gatech.coc.cs6422.group16.algebraTree.CartesianProductNode;
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationNode;
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -84,6 +85,7 @@ public class TreeGenerator
                 {
                     RelationalAlgebraTree copyRoot = root.copyNode();
                     fillInLeaves(new LinkedList<>(permutation), copyRoot);
+                    //SwingRelationAlgebraTree.showInDialog(copyRoot,"Tree");
                     trees.add(copyRoot);
                 }
                 /*
@@ -132,6 +134,7 @@ public class TreeGenerator
                         newTree.addChild(left);
                         newTree.addChild(right);
 
+                        //SwingRelationAlgebraTree.showInDialog(newTree,"Tree");
                         trees.add(newTree);
                     }
                 }
