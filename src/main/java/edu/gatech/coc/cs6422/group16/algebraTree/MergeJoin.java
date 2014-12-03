@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by thangnguyen on 11/18/14.
  */
-public class MergeJoin extends JoinNode
+public class MergeJoin extends RelationalAlgebraTree
 {
     private Comparison comparison;
 
@@ -28,7 +28,7 @@ public class MergeJoin extends JoinNode
     {
         QualifiedField newCond1 = this.condition1.copyNode();
         QualifiedField newCond2 = this.condition2.copyNode();
-        return super.copyFields(new JoinAsSelectNode(newCond1, this.comparison, newCond2));
+        return super.copyFields(new MergeJoin(newCond1, this.comparison, newCond2));
     }
 
     @Override

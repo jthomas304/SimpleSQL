@@ -4,6 +4,7 @@ import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.heuristics.CartesianToJoin;
+import edu.gatech.coc.cs6422.group16.heuristics.GreedyAlgorithm;
 import edu.gatech.coc.cs6422.group16.heuristics.PushSelectionDown;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 import edu.gatech.coc.cs6422.group16.statistics.Statistics;
@@ -26,6 +27,8 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 // trees.get(0) has unoptimized tree, we need to optimize it
                 int numberOfRelationPermutations = trees.size();
 
+
+                SwingRelationAlgebraTree.showInDialog(trees.get(0), "Unoptimized Tree");
                 /*
                 for(int i = 0; i < numberOfRelationPermutations; i++) {
                     SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
@@ -47,7 +50,9 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 }
                 */
 
-
+                //RelationalAlgebraTree copyIt = trees.get(0).copyNode();
+                //GreedyAlgorithm.TransformViaGreedyAlgorithm(copyIt);
+                //SwingRelationAlgebraTree.showInDialog(copyIt, "Greedy");
 
 
                 // Go through each table order permutation
@@ -65,7 +70,8 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
 
                     List<RelationalAlgebraTree> partialTree = new ArrayList<>();
 
-                    trees.add(singleTree);
+                    //trees.add(singleTree);
+
                     // for each cartesian product node in the unoptimized algebra tree
                     for (int j = 0; j < numberOfJoins; j++) {
                         // k dependent on how many types of joins we implement
@@ -94,35 +100,44 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
 
 
                                     //System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
-                                    //SwingRelationAlgebraTree.showInDialog(newCopy, "Tree");
-                                    /*
-                                    for (int wait = 0; wait < 1000; wait++) {
-                                    }
-                                    */
-
 
                                     JoinNode temp = joinNodes.get(0).getCurrentNodeAs(JoinNode.class);
                                     temp.replaceNode(temp.toSpecificJoin(k));
                                     partialTree.add(count, newCopy);
                                     //partialTree.remove(partialTree.get(l));
 
-                                    /*
-                                    if ((j == numberOfJoins-1) && (k == count-1)) {
-                                        partialTree.remove(partialTree.get(l));
-                                    }
-                                    */
+//                                    if ((i == 0) && (j == 1) && (k == 0) && (l == 0)) {
+//                                        SwingRelationAlgebraTree.showInDialog(partialTree.get(l), "Tester1");
+//                                        SwingRelationAlgebraTree.showInDialog(partialTree.get(l).copyNode(), "Copy");
+//                                        SwingRelationAlgebraTree.showInDialog(newCopy, "Tester");
+//                                    }
+
+
                                 }
                             }
 
                         }
 
+                                    if ((i == 0) && (j == 1)) {
+                                        for (int k = 0; k < 4; k++) {
+                                            SwingRelationAlgebraTree.showInDialog(partialTree.get(k), "Eraser");
+                                        }
+                                    }
+
                         if (j > 0) {
+
+                            ArrayList<RelationalAlgebraTree> tempList = new ArrayList<>();
                             for (int k = 0; k < count; k++) {
-                                partialTree.remove(partialTree.get(k));
+                                tempList.add(partialTree.get(k));
+                            }
+                            for (int k = 0; k < tempList.size(); k++) {
+                                partialTree.remove(tempList.get(k));
                             }
                         }
 
+
                     }
+
                     trees.addAll(partialTree);
                     /*
                     for (RelationalAlgebraTree aTree : partialTree) {
@@ -131,35 +146,14 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                     */
                 }
 
-/*
-                RelationalAlgebraTree singleTree = trees.get(0).copyNode();
-                PushSelectionDown.pushSelectionDown(singleTree);
-                CartesianToJoin.cartesianToJoin(singleTree);
-*/
 
-                /*
-                for (int i = 0; i < 3; i++) {
-                    RelationalAlgebraTree singleTree = trees.get(0).copyNode();
-                    if (i == 0) {
-                        PushSelectionDown.pushSelectionDown(singleTree);
-                    }
-                    if (i == 1) {
-                        CartesianToJoin.cartesianToJoin(singleTree);
-                    }
-                    if (i == 2) {
-                        PushSelectionDown.pushSelectionDown(singleTree);
-                        CartesianToJoin.cartesianToJoin(singleTree);
-                    }
-                    stat.addQueryTree(singleTree);
-                }
-                */
                 stat.stop(TimerType.OPTIMIZATION);
 
 
 
                 for(int i = 0; i < trees.size(); i++) {
                     stat.addQueryTree(trees.get(i));
-//                    SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
+                    //SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
                 }
 
 

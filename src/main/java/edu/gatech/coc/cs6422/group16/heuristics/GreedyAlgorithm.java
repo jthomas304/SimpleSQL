@@ -1,6 +1,8 @@
 package edu.gatech.coc.cs6422.group16.heuristics;
 
+//import com.sun.java.util.jar.pack.ConstantPool;
 import edu.gatech.coc.cs6422.group16.algebraTree.*;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +17,15 @@ import java.util.List;
 public class GreedyAlgorithm {
     public static void TransformViaGreedyAlgorithm(RelationalAlgebraTree root) {
         List<RelationalAlgebraTree> markedNodes = new ArrayList<>();
-        List<RelationalAlgebraTree> unionNodes = new ArrayList<>();
-        getAllNodesOfType(root, JoinNode.class, unionNodes);
-        getAllNodesOfType(root, CartesianProductNode.class, unionNodes);
+        List<RelationalAlgebraTree> comboNodes = new ArrayList<>();
+        comboNodes = getAllComboNodes(root);
 
         // while not all join-selects are converted or |markedNode| < |joinAsSelectNodes|, continue converting
-        while ((unionNodes.size() > 0) && (markedNodes.size() < unionNodes.size())) {
-            RelationalAlgebraTree nextUnionNode = searchNextUnionNode(root, markedNodes);
-            if (nextUnionNode != null) {
+        while ((comboNodes.size() > 0) && (markedNodes.size() < comboNodes.size())) {
+            RelationalAlgebraTree nextComboNode = searchNextComboNode(root, markedNodes);
+            if (nextComboNode != null) {
                 List<RelationNode> possibleRelations = new ArrayList<>();
-                getAllNodesOfType(nextUnionNode, RelationNode.class, possibleRelations);
+                getAllNodesOfType(nextComboNode, RelationNode.class, possibleRelations);
                 List<Double> temp = new ArrayList<>();
 
                 // when a union type only has two relations can compare them directly
@@ -38,14 +39,38 @@ public class GreedyAlgorithm {
                         possibleRelations.get(0).replaceNode(rightNode);
                         possibleRelations.get(1).replaceNode(leftNode);
                     }
+                    markedNodes.add(nextComboNode);
                 }
                 else {
-
+                    if (getAllComboNodes(nextComboNode).size() > 0) {
+//                        leftSideCombo = true;
+                    }
 
                 }
 
             }
         }
+    }
+
+    private static RelationalAlgebraTree combinationParent(RelationalAlgebraTree relation) {
+        RelationalAlgebraTree node = relation;
+        while (notCombination(node)) {
+            node = node.getParent();
+        }
+
+        return node;
+    }
+
+    private static boolean notCombination(RelationalAlgebraTree node) {
+        boolean join, joinAsSelect, BNL, IndexedNestedLoop, Merge, Hash;
+
+        join = (null == node.getCurrentNodeAs(JoinNode.class)) ? true : false;
+        BNL = (null == node.getCurrentNodeAs(BNLJoin.class)) ? true : false;
+        IndexedNestedLoop = (null == node.getCurrentNodeAs(IndexedNestedLoopJoin.class)) ? true : false;
+        Merge = (null == node.getCurrentNodeAs(MergeJoin.class)) ? true : false;
+        Hash = (null == node.getCurrentNodeAs(HashJoin.class)) ? true : false;
+
+        return join && BNL && IndexedNestedLoop && Merge && Hash;
     }
 
     private static <T extends RelationalAlgebraTree> void getAllNodesOfType(RelationalAlgebraTree current, Class<? extends T> classType, List<T> nodeList) {
@@ -57,19 +82,61 @@ public class GreedyAlgorithm {
         }
     }
 
-    private static RelationalAlgebraTree searchNextUnionNode(RelationalAlgebraTree start, List<RelationalAlgebraTree> markedNodes) {
+    private static ArrayList<RelationalAlgebraTree> getAllComboNodes(RelationalAlgebraTree current) {
+        ArrayList<RelationalAlgebraTree> nodeList = new ArrayList<>();
+        if (current.isClass(CartesianProductNode.class)) {
+            nodeList.add(current.getCurrentNodeAs(CartesianProductNode.class));
+        }
+        else if (current.isClass(JoinNode.class)) {
+            nodeList.add(current.getCurrentNodeAs(JoinNode.class));
+        }
+        else if (current.isClass(BNLJoin.class)) {
+            nodeList.add(current.getCurrentNodeAs(BNLJoin.class));
+        }
+        else if (current.isClass(IndexedNestedLoopJoin.class)) {
+            nodeList.add(current.getCurrentNodeAs(IndexedNestedLoopJoin.class));
+        }
+        else if (current.isClass(MergeJoin.class)) {
+            nodeList.add(current.getCurrentNodeAs(MergeJoin.class));
+        }
+        else if (current.isClass(HashJoin.class)) {
+            nodeList.add(current.getCurrentNodeAs(HashJoin.class));
+        }
+
+
+        for (RelationalAlgebraTree child : current.getChildren()) {
+            nodeList.addAll(getAllComboNodes(child));
+        }
+
+        return nodeList;
+    }
+
+    private static RelationalAlgebraTree searchNextComboNode(RelationalAlgebraTree start, List<RelationalAlgebraTree> markedNodes) {
         // loop all children, calling recursively, resulting in a depth-first-search:
         for (RelationalAlgebraTree child : start.getChildren()) {
-            RelationalAlgebraTree nextUnionNode = searchNextUnionNode(child, markedNodes);
+            RelationalAlgebraTree nextUnionNode = searchNextComboNode(child, markedNodes);
             if (nextUnionNode != null) {
                 return nextUnionNode;
             }
         }
         // only return if the current node has not been marked and is a CartesianProductNode:
-        if (!markedNodes.contains(start) && (start.isClass(CartesianProductNode.class) || start.isClass(JoinNode.class)) ) {
+        if (!markedNodes.contains(start) && isCombo(start) ) {
             return start;
         }
         return null;
+    }
+
+    private static boolean isCombo(RelationalAlgebraTree node) {
+        boolean cart, join, BNL, IndexedNestedLoop, Merge, Hash;
+
+        cart = node.isClass(CartesianProductNode.class);
+        join = node.isClass(JoinNode.class);
+        BNL = node.isClass(BNLJoin.class);
+        IndexedNestedLoop = node.isClass(IndexedNestedLoopJoin.class);
+        Merge = node.isClass(MergeJoin.class);
+        Hash = node.isClass(HashJoin.class);
+
+        return cart || join || BNL || IndexedNestedLoop || Merge || Hash;
     }
 
     private static boolean relationInList(List<RelationNode> relations, QualifiedField field) {

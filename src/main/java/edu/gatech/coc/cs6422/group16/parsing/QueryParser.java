@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -187,6 +188,8 @@ public class QueryParser
         List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes,
                 config.getNumberOfTrees());
 
+
+
         // Convert all the possible relation trees into full-fledged relation-algebra-trees:
         for (RelationalAlgebraTree singleTree : possibleRelationTrees)
         {
@@ -199,6 +202,8 @@ public class QueryParser
             // just add the relation-tree to the deepest node, done!
             newCurrentNode.addChild(singleTree);
 
+
+            //SwingRelationAlgebraTree.showInDialog(newRoot, "Permutation");
             allTrees.add(newRoot);
         }
         System.out.println("Test 156| Size of all possible trees: " + allTrees.size());
