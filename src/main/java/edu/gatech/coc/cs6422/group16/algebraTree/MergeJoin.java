@@ -37,15 +37,15 @@ public class MergeJoin extends JoinNode
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         double numBlock1 = meta.GetNumberBlock(this.condition1);
         double numBlock2 = meta.GetNumberBlock(this.condition2);
-        return (double) (numBlock1*numBlock2 + numBlock1*Math.log(numBlock1) + numBlock2*Math.log(numBlock2));
+        return Math.ceil((numBlock1*numBlock2 + numBlock1*Math.log(numBlock1) + numBlock2*Math.log(numBlock2)));
     }
     @Override
     public double evaluateSize(List<Double> childrenSize)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2)));
+        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
     public String getNodeContent()
@@ -54,11 +54,12 @@ public class MergeJoin extends JoinNode
         if (config.isShowCostsInVisualTree())
         {
             return "Merge Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + this.computeCost() + " , " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
         else
         {
-            return "Merge Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
+            return "Merge Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
     }
     @Override

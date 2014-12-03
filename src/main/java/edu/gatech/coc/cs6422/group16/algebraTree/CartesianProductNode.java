@@ -28,11 +28,11 @@ public class CartesianProductNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "x \n " + this.computeCost() + " , " + this.computeSize();
+            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
         else
         {
-            return "x \n" + this.computeCost();
+            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
     }
 

@@ -23,6 +23,7 @@ public class PushProjectionDown {
         List<RelationalAlgebraTree> joinNodes = new ArrayList<>();
         getAllJoinTypes(root, joinNodes);
         int numberOfJoins = joinNodes.size();
+
         //Create to 2 lists of condition at a given join node
         List<QualifiedField> listCondition1 = new ArrayList<>();
         List<QualifiedField> listCondition2 = new ArrayList<>();

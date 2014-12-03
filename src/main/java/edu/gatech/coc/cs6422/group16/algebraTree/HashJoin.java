@@ -41,14 +41,14 @@ public class HashJoin extends JoinNode
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         double numBlock1 = meta.GetNumberBlock(this.condition1);
         double numBlock2 = meta.GetNumberBlock(this.condition2);
-        return 3 * (numBlock1 + numBlock2);
+        return Math.ceil(3 * (numBlock1 + numBlock2));
     }
     @Override
     public double evaluateSize(List<Double> childrenSize)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2)));
+        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
     public String getNodeContent()
@@ -57,11 +57,12 @@ public class HashJoin extends JoinNode
         if (config.isShowCostsInVisualTree())
         {
             return "Hash Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + this.computeCost() + " , " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
         else
         {
-            return "Hash Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
+            return "Hash Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
     }
 

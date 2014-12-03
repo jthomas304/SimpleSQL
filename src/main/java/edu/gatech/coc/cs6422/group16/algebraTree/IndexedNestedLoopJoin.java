@@ -41,15 +41,15 @@ public class IndexedNestedLoopJoin extends JoinNode
         double numTuple2 = meta.GetRelationSize(this.condition2.getRelation());
         double cost1 = (numBlock1 + numTuple1 * Math.log(numBlock1));
         double cost2 = (numBlock1 + numTuple1 * Math.log(numBlock2));
-        return Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2);
+        return Math.ceil(Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2));
     }
     @Override
     public double evaluateSize(List<Double> childrenSize)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2)));
+        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
     public String getNodeContent()
@@ -58,11 +58,12 @@ public class IndexedNestedLoopJoin extends JoinNode
         if (config.isShowCostsInVisualTree())
         {
             return "INLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + this.computeCost() + " , " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
         else
         {
-            return "INLJoin(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
+            return "INLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
     }
 

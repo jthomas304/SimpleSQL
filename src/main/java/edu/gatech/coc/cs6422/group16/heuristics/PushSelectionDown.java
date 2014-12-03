@@ -6,48 +6,26 @@ public class PushSelectionDown
 {
     public static boolean TraverseCartesianProductNode(final SelectNode selNode, RelationalAlgebraTree root)
     {
-        System.out.println("Test 165: Selection Node: " + selNode);
-        System.out.println("Test 165: Root " + root);
         boolean change = false;
-        if (root == null)
-            return change;
+        if (root == null)return false;
         CartesianProductNode carProdNode = root.getCurrentNodeAs(CartesianProductNode.class);
         SelectNode selectionNode = root.getCurrentNodeAs(SelectNode.class);
-        ProjectNode projNode = root.getCurrentNodeAs(ProjectNode.class);
-
-        System.out.println("Test 165: Cartesian Product Node: " + carProdNode);
-        System.out.println("Test 165: Select Node: " + selectionNode);
-        System.out.println("Test 165: Project Node: " + projNode);
-
-        if (carProdNode == null && selectionNode ==null && projNode == null)
-        {
-            return change;
-        }
+        ProjectNode projectNode = root.getCurrentNodeAs(ProjectNode.class);
+        if (carProdNode == null && selectionNode ==null && projectNode == null) return false;
         RelationalAlgebraTree c1 = root.getChildren().get(0);
         RelationalAlgebraTree c2 = null;
-        if (root.getChildCount() > 1)
-            c2 = root.getChildren().get(1);
-
-        System.out.println("Test 165: Root's child c1 " + c1);
-        System.out.println("Test 165: Root's child c2 " + c2);
+        if (root.getChildCount() > 1) c2 = root.getChildren().get(1);
         RelationNode relNode;
 
         if (c1 != null)
         {
             if ((relNode = c1.getCurrentNodeAs(RelationNode.class)) != null)
             {
-                System.out.println("Test 165: rel Node of Child 1 " + relNode);
-                //is a relation node
                 if (relNode.getRelation().equals(selNode.getField().getRelation()))
                 {
                     SelectNode newSelNode = new SelectNode(selNode.getField(), selNode.getComparison(),
                             selNode.getValue());
-                    System.out.println("Test 165: New Selection Node " + newSelNode);
-                    System.out.println("Test 165: New Selection Node's Field " + selNode.getField());
-                    System.out.println("Test 165: New Selection Node's Comparison " + selNode.getComparison());
-                    System.out.println("Test 165: New Selection Node's Value " + selNode.getValue());
                     root.insertNodeInSubtree(0, newSelNode);
-                    System.out.println("Test 165: New Root " + root);
                     change = true;
                 }
             }
@@ -61,8 +39,7 @@ public class PushSelectionDown
                     SelectNode newSelNode = new SelectNode(selNode.getField(), selNode.getComparison(),
                             selNode.getValue());
 
-                    carProdNode.insertNodeInSubtree(1, newSelNode);
-                    System.out.println("Test 165: New Cartesian Product Node " + carProdNode);
+                    root.insertNodeInSubtree(1, newSelNode);
                     change = true;
                 }
             }
@@ -88,12 +65,7 @@ public class PushSelectionDown
         }
 
 
-
-
-        System.out.println("Test 167: Project Node: " + pn);
-
         cur = root.getChildren().get(0);
-        System.out.println("Test 166: Current Node: " + cur);
 
         while (cur != null && cur.getCurrentNodeAs(SelectNode.class) == null)
         {
@@ -101,7 +73,6 @@ public class PushSelectionDown
             if (cur.getChildCount() > 0)
             {
                 cur = parent.getChildren().get(0);
-                System.out.println("Test 166: New Current Node: " + cur);
             }
             else
             {
@@ -115,14 +86,8 @@ public class PushSelectionDown
         {
             //from the cur SelectNode, search down till CartesianProductNode is found
             selNode = cur.getCurrentNodeAs(SelectNode.class);
-            System.out.println("Test 166: New Selection Node: " + selNode);
             searchParent = cur;
-            System.out.println("Test 166: New Search Parent Node: " + searchParent);
-            System.out.println("Test 166: Size of Children of New Search Parent Node: "
-                    + searchParent.getChildren().size());
-
             searchCur = searchParent.getChildren().get(0);
-            System.out.println("Test 166: Search Current Node: " + searchCur);
             while (searchCur != null && searchCur.getCurrentNodeAs(CartesianProductNode.class) == null)
             {
                 if (searchCur.getCurrentNodeAs(JoinNode.class) != null)
@@ -132,25 +97,19 @@ public class PushSelectionDown
                 }
                 searchParent = searchCur;
                 searchCur = searchParent.getChildren().get(0);
-                System.out.println("Test 166: New Search Current Node: " + searchCur);
             }
             //if no CartesianProductNode is found, there would be no push-down opportunity
             if (searchCur == null)
             {
                 break;
             }
-            System.out.println("Test 166: Select Node: " + selNode);
-            System.out.println("Test 166: Search Node: " + searchCur);
+
 
             if (TraverseCartesianProductNode(selNode, searchCur))
             {
                 RelationalAlgebraTree tempCur = cur.getChildren().get(0);
-                System.out.println("Test 166: The temp current Node: " + tempCur);
                 cur.deleteNode();
-                System.out.println("Test 166: The new current node after deleting node: " + cur);
                 cur = tempCur;
-                System.out.println("Test 166: The new current Node: " + cur);
-                System.out.println("Test 166: The sel Node: " + selNode);
                 //                cur = cur.getChildren().get(0);
                 //                parent.getChildren().remove(0);
                 //                parent.getChildren().add(cur);
@@ -159,7 +118,6 @@ public class PushSelectionDown
             {
                 parent = cur;
                 cur = parent.getChildren().get(0);
-                System.out.println("Test 166: If we can't find selNode: " + cur);
             }
         }
 

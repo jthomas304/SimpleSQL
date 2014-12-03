@@ -13,11 +13,6 @@ public class CartesianToJoin
         List<JoinAsSelectNode> joinAsSelectNodes = new ArrayList<>();
         getAllNodesOfType(root, JoinAsSelectNode.class, joinAsSelectNodes);
 
-        System.out.println("Test 130 | Root: " + root);
-        System.out.println("Test 130 | Join As Select Nodes: " + joinAsSelectNodes);
-        System.out.println("Test 130 | Join As Select Nodes Size: " + joinAsSelectNodes.size());
-        System.out.println("Test 130 | Marked Nodes: " + markedNodes);
-        System.out.println("Test 130 | Marked Nodes Size: " + markedNodes.size());
         // while not all join-selects are converted or |markedNode| < |joinAsSelectNodes|, continue converting
         while ((joinAsSelectNodes.size() > 0) && (markedNodes.size() < joinAsSelectNodes.size()))
         {
@@ -91,7 +86,6 @@ public class CartesianToJoin
         // loop all children, calling recursively, resulting in a depth-first-search:
         for (RelationalAlgebraTree child : start.getChildren())
         {
-            System.out.println("Test 132: Child: " + child);
             RelationalAlgebraTree nextCartNode = searchNextCartesianProductNode(child, markedNodes);
             if (nextCartNode != null)
             {

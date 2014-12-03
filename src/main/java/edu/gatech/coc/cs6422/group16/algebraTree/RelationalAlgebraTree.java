@@ -76,7 +76,7 @@ public abstract class RelationalAlgebraTree
                 + "\n Own Cost: " + ownCost
                 + "\n Child Cost" + childCost);
 
-        return ownCost + childCost;
+        return Math.ceil(ownCost + childCost);
     }
 
     public double computeSize()
@@ -92,7 +92,7 @@ public abstract class RelationalAlgebraTree
                         + "\n This Children" + this.children
                         + "\n Own Cost: " + ownSize);
 
-        return ownSize;
+        return Math.ceil(ownSize);
     }
 
 

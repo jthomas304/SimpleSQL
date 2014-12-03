@@ -40,15 +40,15 @@ public class BNLJoin extends JoinNode
             System.out.println("Test 173: numBlock1" + numBlock1);
             System.out.println("Test 173: numBlock1" + numBlock2);
             System.out.println("Test 173: BNL Cost" +Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2));
-            return Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2);
+            return Math.ceil(Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2));
         }
         @Override
         public double evaluateSize(List<Double> childrenSize)
         {
             MetaDataRepository meta = MetaDataRepository.GetInstance();
             // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-            return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                    meta.GetDistinctValueOfAttribute(this.condition2)));
+            return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                    meta.GetDistinctValueOfAttribute(this.condition2))));
         }
         @Override
         public String getNodeContent()
@@ -56,12 +56,13 @@ public class BNLJoin extends JoinNode
             ExecutionConfig config = ExecutionConfig.getInstance();
             if (config.isShowCostsInVisualTree())
             {
-                return "BLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                        + this.computeCost() + " , " + this.computeSize();
+                return "BNLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                        + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
             }
             else
             {
-                return "BLJoin(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
+                return "BNLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                        + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
             }
         }
 

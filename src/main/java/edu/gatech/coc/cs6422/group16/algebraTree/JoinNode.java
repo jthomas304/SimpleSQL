@@ -42,15 +42,15 @@ public class JoinNode extends RelationalAlgebraTree
         //        meta.GetDistinctValueOfAttribute(this.condition2));
         double numBlock1 = meta.GetNumberBlock(this.condition1);
         double numBlock2 = meta.GetNumberBlock(this.condition2);
-        return numBlock1 * numBlock2 / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2));
+        return Math.ceil(numBlock1 * numBlock2 / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)));
     }
     public double evaluateSize(List<Double> childrenSize)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return (childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2)));
+        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
     public String getNodeContent()
@@ -59,11 +59,12 @@ public class JoinNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + this.computeCost() + " , " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
         else
         {
-            return "Join(" + condition1.toString() + " = " + condition2.toString() +")\n" + this.computeCost();
+            return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
         }
     }
 

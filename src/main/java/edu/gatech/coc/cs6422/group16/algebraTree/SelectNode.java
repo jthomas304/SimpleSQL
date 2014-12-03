@@ -32,7 +32,7 @@ public class SelectNode extends RelationalAlgebraTree
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / V(S, a)
-        return childrenCost.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field);
+        return Math.ceil(childrenCost.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SelectNode extends RelationalAlgebraTree
             return childrenSize.get(0) / 3;
         }
         // formula: T(R) = T(S) / V(S, a)
-        return childrenSize.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field);
+        return Math.ceil(childrenSize.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field));
     }
 
     @Override
@@ -53,12 +53,12 @@ public class SelectNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    this.computeCost() + " , " + this.computeSize();
+                    "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
         else
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    this.computeCost()+ " , " + this.computeSize();
+                    "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
     }
 

@@ -24,14 +24,14 @@ public class RelationNode extends RelationalAlgebraTree
     public double evaluateCost(List<Double> childrenCost)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return meta.GetRelationSize(this.relation);
+        return Math.ceil(meta.GetRelationSize(this.relation));
         //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
     }
     @Override
     public double evaluateSize(List<Double> childrenSize)
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return meta.GetRelationSize(this.relation);
+        return Math.ceil(meta.GetRelationSize(this.relation));
         //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
     }
     @Override
@@ -40,11 +40,11 @@ public class RelationNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return this.getRelation() + "\n" + this.computeCost() + " , " + this.computeSize();
+            return this.getRelation() + "\n" + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
         else
         {
-            return this.getRelation() + "\n" + this.computeCost()+ " , " + this.computeSize();
+            return this.getRelation() + "\n" + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
         }
     }
 
