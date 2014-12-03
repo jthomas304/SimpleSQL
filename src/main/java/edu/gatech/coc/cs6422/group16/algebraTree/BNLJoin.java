@@ -87,7 +87,7 @@ public class BNLJoin extends RelationalAlgebraTree
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
         String s2 = "(" + this.getChildren().get(1).toString() + ")";
-        return s1 + "Hash Join{" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+        return s1 + "BNL Join{" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
                 "}" + s2;
     }
 
