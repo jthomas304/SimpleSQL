@@ -44,16 +44,16 @@ public class PushProjectionDown {
             if (c1.isClass(RelationNode.class)) {
                 RelationNode newNode = c1.getCurrentNodeAs(RelationNode.class);
                 if(newNode.getRelation().equals(current.getCondition1().getRelation())) {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c1);
                     newProjectRootNode2.addChild(c2);
                     current.getChildren().set(0, newProjectRootNode1);
                     current.getChildren().set(1, newProjectRootNode2);
 
                 } else {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c2);
                     newProjectRootNode2.addChild(c1);
                     current.getChildren().set(0, newProjectRootNode2);
@@ -62,15 +62,15 @@ public class PushProjectionDown {
             } else if (c1.isClass(SelectNode.class)) {
                 SelectNode newNode = c1.getCurrentNodeAs(SelectNode.class);
                 if(newNode.getField().getRelation().equals(current.getCondition1().getRelation())) {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c1);
                     newProjectRootNode2.addChild(c2);
                     current.getChildren().set(0, newProjectRootNode1);
                     current.getChildren().set(1, newProjectRootNode2);
                 } else {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c2);
                     newProjectRootNode2.addChild(c1);
                     current.getChildren().set(0, newProjectRootNode2);
@@ -80,16 +80,16 @@ public class PushProjectionDown {
                 JoinNode newNode = c1.getCurrentNodeAs(JoinNode.class);
                 if (newNode.getCondition1().getRelation().equals(current.getCondition1().getRelation())
                         || newNode.getCondition2().getRelation().equals(current.getCondition1().getRelation())) {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c1, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c2, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c1);
                     newProjectRootNode2.addChild(c2);
                     current.getChildren().set(0, newProjectRootNode1);
                     current.getChildren().set(1, newProjectRootNode2);
 
                 } else {
-                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1);
-                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2);
+                    newProjectRootNode1 = addProjection(newProjectRootNode, c2, newProjectRootNode1, current);
+                    newProjectRootNode2 = addProjection(newProjectRootNode, c1, newProjectRootNode2, current);
                     newProjectRootNode1.addChild(c2);
                     newProjectRootNode2.addChild(c1);
                     current.getChildren().set(0, newProjectRootNode2);
@@ -100,7 +100,7 @@ public class PushProjectionDown {
     }
 
     private static ProjectNode addProjection(ProjectNode projectRootNode, RelationalAlgebraTree node,
-                                                       ProjectNode newProjectNode) {
+                                                       ProjectNode newProjectNode, JoinNode current) {
         QualifiedField qf;
         boolean change = true;
         if (node.isClass(RelationNode.class)) {
@@ -137,16 +137,30 @@ public class PushProjectionDown {
             JoinNode newNode = node.getCurrentNodeAs(JoinNode.class);
             for (int i = 0; i < projectRootNode.getProjections().size(); i++) {
                 qf = projectRootNode.getProjections().get(i);
-                if (qf.getRelation().equals(newNode.getCondition1().getRelation())
-                        || qf.getRelation().equals(newNode.getCondition2().getRelation())) {
-                    for (QualifiedField q : newProjectNode.getProjections()) {
-                        if (q.getRelation().equals(qf.getRelation())
-                                && q.getAttribute().equals(qf.getAttribute())) {
-                            change = false;
+                if (qf.getRelation().equals(current.getCondition1().getRelation())) {
+                    if (newNode.getCondition1().getRelation().equals(current.getCondition1().getRelation())
+                        || (newNode.getCondition2().getRelation().equals(current.getCondition1().getRelation()))) {
+                        for (QualifiedField q : newProjectNode.getProjections()) {
+                            if (q.getRelation().equals(qf.getRelation())
+                                    && q.getAttribute().equals(qf.getAttribute())) {
+                                change = false;
+                            }
                         }
+                        if (change) newProjectNode.addProjection(qf);
+                        change = true;
                     }
-                    if (change) newProjectNode.addProjection(qf);
-                    change = true;
+                } else if  (qf.getRelation().equals(current.getCondition1().getRelation())) {
+                    if (newNode.getCondition1().getRelation().equals(current.getCondition2().getRelation())
+                            || (newNode.getCondition2().getRelation().equals(current.getCondition2().getRelation()))) {
+                        for (QualifiedField q : newProjectNode.getProjections()) {
+                            if (q.getRelation().equals(qf.getRelation())
+                                    && q.getAttribute().equals(qf.getAttribute())) {
+                                change = false;
+                            }
+                        }
+                        if (change) newProjectNode.addProjection(qf);
+                        change = true;
+                    }
                 }
             }
         }
