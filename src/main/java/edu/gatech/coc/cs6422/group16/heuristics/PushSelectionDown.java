@@ -120,11 +120,6 @@ public class PushSelectionDown
                 cur = parent.getChildren().get(0);
             }
         }
-
-
-
-
-
     }
 
 

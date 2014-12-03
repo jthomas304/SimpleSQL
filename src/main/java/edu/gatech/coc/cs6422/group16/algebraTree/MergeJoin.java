@@ -90,6 +90,7 @@ public class MergeJoin extends RelationalAlgebraTree
                 "}" + s2;
     }
 
+
     public Comparison getComparison()
     {
         return comparison;
