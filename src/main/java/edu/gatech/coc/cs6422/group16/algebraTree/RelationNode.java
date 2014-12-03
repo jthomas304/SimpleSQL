@@ -24,7 +24,8 @@ public class RelationNode extends RelationalAlgebraTree
     public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return Math.ceil(meta.GetRelationSize(this.relation));
+        return 0;
+        //return Math.ceil(meta.GetRelationSize(this.relation));
         //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
     }
     @Override
