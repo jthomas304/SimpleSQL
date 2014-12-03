@@ -85,8 +85,9 @@ public class MergeJoin extends RelationalAlgebraTree
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        return "\u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
-                ")" + s1;
+        String s2 = "(" + this.getChildren().get(1).toString() + ")";
+        return s1 + "Merge Join{" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+                "}" + s2;
     }
 
     public Comparison getComparison()
