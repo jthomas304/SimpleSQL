@@ -32,7 +32,8 @@ public class SelectNode extends RelationalAlgebraTree
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / V(S, a)
-        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field));
+        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field)
+        + this.getChildren().get(0).evaluateCost());
     }
 
     @Override
