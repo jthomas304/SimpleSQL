@@ -6,8 +6,8 @@ import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelation
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.heuristics.CartesianToJoin;
-import edu.gatech.coc.cs6422.group16.heuristics.PushProjectionDown;
 import edu.gatech.coc.cs6422.group16.heuristics.PushSelectionDown;
+import edu.gatech.coc.cs6422.group16.heuristics.PushProjectionDown;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 import edu.gatech.coc.cs6422.group16.statistics.Statistics;
 import edu.gatech.coc.cs6422.group16.statistics.TimerType;

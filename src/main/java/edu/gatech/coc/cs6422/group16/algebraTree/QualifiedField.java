@@ -23,12 +23,12 @@ public class QualifiedField extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         return 0;
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         return 0;
     }

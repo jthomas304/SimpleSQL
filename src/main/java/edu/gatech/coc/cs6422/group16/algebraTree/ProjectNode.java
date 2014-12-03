@@ -40,16 +40,15 @@ public class ProjectNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
-        System.out.println(childrenCost.get(0) + " Test 90");
-        return Math.ceil(childrenCost.get(0));
+        return Math.ceil(this.getChildren().get(0).evaluateCost() +
+                this.getChildren().get(0).evaluateSize());
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
-        System.out.println(childrenSize.get(0) + " Test 90");
-        return Math.ceil(childrenSize.get(0));
+        return Math.ceil(this.getChildren().get(0).evaluateSize());
     }
     @Override
     public String getNodeContent()
@@ -78,8 +77,8 @@ public class ProjectNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.computeSize();
-        } else  s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.computeSize();
+            s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.evaluateSize();
+        } else  s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.evaluateSize();
 
         return s;
     }

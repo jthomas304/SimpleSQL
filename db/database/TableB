@@ -1,3 +1,3 @@
 #Block:Int, ID:String:PRIMARY, Name:String, Grade:String
-# size of relation, #size of block, # of distinct values of each attribute
+# size of relation, #num tuple per block, # of distinct values of each attribute
 10000, 10, 10000, 5000, 5

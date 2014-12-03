@@ -34,7 +34,7 @@ public class JoinNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
@@ -43,13 +43,14 @@ public class JoinNode extends RelationalAlgebraTree
         double numBlock1 = meta.GetNumberBlock(this.condition1);
         double numBlock2 = meta.GetNumberBlock(this.condition2);
         return Math.ceil(numBlock1 * numBlock2 / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2)));
+                meta.GetDistinctValueOfAttribute(this.condition2)))
+                + this.getChildren().get(0).evaluateCost() + this.getChildren().get(1).evaluateCost();
     }
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        return Math.ceil((this.getChildren().get(0).evaluateSize() * this.getChildren().get(1).evaluateSize()) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
@@ -59,12 +60,12 @@ public class JoinNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
         else
         {
             return "Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
     }
 

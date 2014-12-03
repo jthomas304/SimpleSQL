@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by thangnguyen on 11/18/14.
  */
-public class IndexedNestedLoopJoin extends JoinNode
+public class IndexedNestedLoopJoin extends RelationalAlgebraTree
 {
     private Comparison comparison;
 
@@ -28,11 +28,11 @@ public class IndexedNestedLoopJoin extends JoinNode
     {
         QualifiedField newCond1 = this.condition1.copyNode();
         QualifiedField newCond2 = this.condition2.copyNode();
-        return super.copyFields(new JoinAsSelectNode(newCond1, this.comparison, newCond2));
+        return super.copyFields(new IndexedNestedLoopJoin(newCond1, this.comparison, newCond2));
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         double numBlock1 = meta.GetNumberBlock(this.condition1);
@@ -41,14 +41,15 @@ public class IndexedNestedLoopJoin extends JoinNode
         double numTuple2 = meta.GetRelationSize(this.condition2.getRelation());
         double cost1 = (numBlock1 + numTuple1 * Math.log(numBlock1));
         double cost2 = (numBlock1 + numTuple1 * Math.log(numBlock2));
-        return Math.ceil(Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2));
+        return Math.ceil(Math.min(numBlock1*numBlock2 + numBlock1, numBlock1*numBlock2+numBlock2)
+                + this.getChildren().get(0).evaluateCost() + this.getChildren().get(1).evaluateCost());
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = (T(S1) * T(S2)) / max(V(R1, a), V(R2, a))
-        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        return Math.ceil((this.getChildren().get(0).evaluateSize() * this.getChildren().get(1).evaluateSize()) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
@@ -58,12 +59,12 @@ public class IndexedNestedLoopJoin extends JoinNode
         if (config.isShowCostsInVisualTree())
         {
             return "INLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
         else
         {
             return "INLJoin(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
     }
 
@@ -130,4 +131,3 @@ public class IndexedNestedLoopJoin extends JoinNode
 
 
 }
-

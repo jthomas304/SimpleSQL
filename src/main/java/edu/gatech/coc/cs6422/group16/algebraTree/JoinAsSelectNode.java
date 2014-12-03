@@ -29,19 +29,19 @@ public class JoinAsSelectNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / max(V(R1, a), V(R2, a))
-        return childrenCost.get(0) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
-                meta.GetDistinctValueOfAttribute(this.condition2));
+        return this.getChildren().get(0).evaluateSize() / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)) + this.getChildren().get(0).evaluateCost();
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / max(V(R1, a), V(R2, a))
-        return childrenSize.get(0) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        return this.getChildren().get(0).evaluateSize() / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2));
     }
     @Override
@@ -51,7 +51,7 @@ public class JoinAsSelectNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + this.computeCost() + " , " + this.computeSize();
+                    + this.computeCost() + " , " + this.evaluateSize();
         }
         else
         {

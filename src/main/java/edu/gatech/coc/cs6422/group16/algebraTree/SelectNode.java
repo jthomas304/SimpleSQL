@@ -28,22 +28,22 @@ public class SelectNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / V(S, a)
-        return Math.ceil(childrenCost.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field));
+        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field));
     }
 
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         if (this.comparison != Comparison.EQUAL) {
-            return childrenSize.get(0) / 3;
+            return this.getChildren().get(0).evaluateSize() / 3;
         }
         // formula: T(R) = T(S) / V(S, a)
-        return Math.ceil(childrenSize.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field));
+        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field));
     }
 
     @Override
@@ -53,12 +53,12 @@ public class SelectNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
+                    "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
         else
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
+                    "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
     }
 

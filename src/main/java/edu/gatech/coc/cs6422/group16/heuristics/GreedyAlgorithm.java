@@ -29,8 +29,8 @@ public class GreedyAlgorithm {
 
                 // when a union type only has two relations can compare them directly
                 if (possibleRelations.size() == 2) {
-                    double leftSideCost = possibleRelations.get(0).evaluateCost(temp);
-                    double rightSideCost = possibleRelations.get(1).evaluateCost(temp);
+                    double leftSideCost = possibleRelations.get(0).evaluateCost();
+                    double rightSideCost = possibleRelations.get(1).evaluateCost();
                     RelationalAlgebraTree leftNode = possibleRelations.get(0).copyNode();
                     RelationalAlgebraTree rightNode = possibleRelations.get(1).copyNode();
 

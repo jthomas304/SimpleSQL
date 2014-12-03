@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by thangnguyen on 11/18/14.
  */
-public class HashJoin extends JoinNode
+public class HashJoin extends RelationalAlgebraTree
 {
     private Comparison comparison;
 
@@ -32,22 +32,24 @@ public class HashJoin extends JoinNode
     {
         QualifiedField newCond1 = this.condition1.copyNode();
         QualifiedField newCond2 = this.condition2.copyNode();
-        return super.copyFields(new JoinAsSelectNode(newCond1, this.comparison, newCond2));
+        return super.copyFields(new HashJoin(newCond1, this.comparison, newCond2));
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         double numBlock1 = meta.GetNumberBlock(this.condition1);
         double numBlock2 = meta.GetNumberBlock(this.condition2);
-        return Math.ceil(3 * (numBlock1 + numBlock2));
+        return Math.ceil(3 * (numBlock1 + numBlock2)
+                + this.getChildren().get(0).evaluateCost() + this.getChildren().get(1).evaluateCost());
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return Math.ceil((childrenSize.get(0) * childrenSize.get(1)) / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        return Math.ceil((this.getChildren().get(0).evaluateSize() * this.getChildren().get(1).evaluateSize())
+                / (Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2))));
     }
     @Override
@@ -57,15 +59,14 @@ public class HashJoin extends JoinNode
         if (config.isShowCostsInVisualTree())
         {
             return "Hash Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
         else
         {
             return "Hash Join(" + condition1.toString() + " = " + condition2.toString() + ")\n"
-                    + "Cost: "+ this.computeCost() + " , Size: " + this.computeSize();
+                    + "Cost: "+ this.computeCost() + " , Size: " + this.evaluateSize();
         }
     }
-
     @Override
     public boolean validate(List<RelationNode> relationNodes)
     {
@@ -88,7 +89,7 @@ public class HashJoin extends JoinNode
     public String toString()
     {
         String s1 = "(" + this.getChildren().get(0).toString() + ")";
-        return "\u03c3(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
+        return "Hash Join(" + condition1.toString() + " " + comparison.toString() + " " + condition2.toString() +
                 ")" + s1;
     }
 

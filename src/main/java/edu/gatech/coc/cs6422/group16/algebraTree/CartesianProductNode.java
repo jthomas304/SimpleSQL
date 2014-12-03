@@ -13,14 +13,15 @@ public class CartesianProductNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
-        return childrenCost.get(0) * childrenCost.get(1);
+        return Math.ceil(this.getChildren().get(0).evaluateSize() * this.getChildren().get(1).evaluateSize()
+                + this.getChildren().get(0).evaluateCost() + this.getChildren().get(1).evaluateCost());
     }
     @Override
-    public double evaluateSize(List<Double> childrenSize)
+    public double evaluateSize()
     {
-        return childrenSize.get(0) * childrenSize.get(1);
+        return Math.ceil(this.getChildren().get(0).evaluateSize() * this.getChildren().get(1).evaluateSize());
     }
     @Override
     public String getNodeContent()
@@ -28,11 +29,11 @@ public class CartesianProductNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
+            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
         else
         {
-            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.computeSize();
+            return "x \n " + "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
     }
 

@@ -40,8 +40,8 @@ public abstract class RelationalAlgebraTree
 
     public abstract RelationalAlgebraTree copyNode();
 
-    public abstract double evaluateCost(List<Double> childrenCost);
-    public abstract double evaluateSize(List<Double> childrenCost);
+    public abstract double evaluateCost();
+    public abstract double evaluateSize();
 
     public abstract String getNodeContent();
 
@@ -61,14 +61,14 @@ public abstract class RelationalAlgebraTree
         {
             childrenCost.add(c.computeCost());
         }
-        double ownCost = this.evaluateCost(childrenCost);
+        double ownCost = this.evaluateCost();
         double childCost = 0;
 
         for (Double c : childrenCost)
         {
             childCost += c;
         }
-
+        childCost = 0;
 
         System.out.println(
                 "Test 112: \n" + "This relation: " + this
@@ -78,23 +78,6 @@ public abstract class RelationalAlgebraTree
 
         return Math.ceil(ownCost + childCost);
     }
-
-    public double computeSize()
-    {
-        List<Double> childrenSize = new ArrayList<>();
-        for (RelationalAlgebraTree c : this.children)
-        {
-            childrenSize.add(c.computeSize());
-        }
-        double ownSize = this.evaluateSize(childrenSize);
-        System.out.println(
-                "Test 112: \n" + "This relation: " + this
-                        + "\n This Children" + this.children
-                        + "\n Own Cost: " + ownSize);
-
-        return Math.ceil(ownSize);
-    }
-
 
     public RelationalAlgebraTree copyFields(RelationalAlgebraTree other)
     {
@@ -223,8 +206,6 @@ public abstract class RelationalAlgebraTree
     public boolean validateTree(List<RelationNode> relationNodes)
     {
         boolean valid = true;
-        System.out.println(this.children + "Test 27");
-        System.out.println(relationNodes + "Test 28");
         for (RelationalAlgebraTree child : this.children)
         {
             if (!child.validateTree(relationNodes))
