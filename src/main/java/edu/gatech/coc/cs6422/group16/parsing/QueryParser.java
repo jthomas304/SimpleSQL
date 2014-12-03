@@ -25,7 +25,7 @@ public class QueryParser
     {
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line,
-                int charPositionInLine, String msg, @Nullable RecognitionException e)
+                                int charPositionInLine, String msg, @Nullable RecognitionException e)
         {
             errorReported = true;
         }
@@ -33,21 +33,21 @@ public class QueryParser
         @Override
         // not needed
         public void reportAmbiguity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex, int stopIndex,
-                boolean exact, @NotNull BitSet ambigAlts, @NotNull ATNConfigSet configs)
+                                    boolean exact, @NotNull BitSet ambigAlts, @NotNull ATNConfigSet configs)
         {
         }
 
         @Override
         // not needed
         public void reportAttemptingFullContext(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex,
-                int stopIndex, @Nullable BitSet conflictingAlts, @NotNull ATNConfigSet configs)
+                                                int stopIndex, @Nullable BitSet conflictingAlts, @NotNull ATNConfigSet configs)
         {
         }
 
         @Override
         // not needed
         public void reportContextSensitivity(@NotNull Parser recognizer, @NotNull DFA dfa, int startIndex,
-                int stopIndex, int prediction, @NotNull ATNConfigSet configs)
+                                             int stopIndex, int prediction, @NotNull ATNConfigSet configs)
         {
         }
     }
@@ -187,6 +187,8 @@ public class QueryParser
         List<RelationalAlgebraTree> possibleRelationTrees = TreeGenerator.generateAllPossibleTrees(relationNodes,
                 config.getNumberOfTrees());
 
+
+
         // Convert all the possible relation trees into full-fledged relation-algebra-trees:
         for (RelationalAlgebraTree singleTree : possibleRelationTrees)
         {
@@ -199,6 +201,8 @@ public class QueryParser
             // just add the relation-tree to the deepest node, done!
             newCurrentNode.addChild(singleTree);
 
+
+            //SwingRelationAlgebraTree.showInDialog(newRoot, "Permutation");
             allTrees.add(newRoot);
         }
         System.out.println("Test 156| Size of all possible trees: " + allTrees.size());

@@ -67,7 +67,8 @@ public class PushSelectionDown
                 }
             }
         }
-        return change || TraverseCartesianProductNode(selNode, c1) || TraverseCartesianProductNode(selNode, c2);
+        return change || TraverseCartesianProductNode(selNode, c1)
+                || TraverseCartesianProductNode(selNode, c2);
     }
 
     public static void pushSelectionDown(RelationalAlgebraTree root) throws IllegalArgumentException
@@ -86,7 +87,11 @@ public class PushSelectionDown
             return;
         }
 
+
+
+
         System.out.println("Test 167: Project Node: " + pn);
+
         cur = root.getChildren().get(0);
         System.out.println("Test 166: Current Node: " + cur);
 
@@ -110,8 +115,14 @@ public class PushSelectionDown
         {
             //from the cur SelectNode, search down till CartesianProductNode is found
             selNode = cur.getCurrentNodeAs(SelectNode.class);
+            System.out.println("Test 166: New Selection Node: " + selNode);
             searchParent = cur;
+            System.out.println("Test 166: New Search Parent Node: " + searchParent);
+            System.out.println("Test 166: Size of Children of New Search Parent Node: "
+                    + searchParent.getChildren().size());
+
             searchCur = searchParent.getChildren().get(0);
+            System.out.println("Test 166: Search Current Node: " + searchCur);
             while (searchCur != null && searchCur.getCurrentNodeAs(CartesianProductNode.class) == null)
             {
                 if (searchCur.getCurrentNodeAs(JoinNode.class) != null)
@@ -121,6 +132,7 @@ public class PushSelectionDown
                 }
                 searchParent = searchCur;
                 searchCur = searchParent.getChildren().get(0);
+                System.out.println("Test 166: New Search Current Node: " + searchCur);
             }
             //if no CartesianProductNode is found, there would be no push-down opportunity
             if (searchCur == null)
@@ -150,5 +162,12 @@ public class PushSelectionDown
                 System.out.println("Test 166: If we can't find selNode: " + cur);
             }
         }
+
+
+
+
+
     }
+
+
 }

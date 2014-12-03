@@ -151,7 +151,7 @@ public abstract class RelationalAlgebraTree
     {
         // first get the child that will be pushed down:
         RelationalAlgebraTree node = this.children.get(indexOfSubtree);
-        System.out.println("Test 170: insertNode:  " + insertNode);
+        //System.out.println("Test 170: insertNode:  " + insertNode);
         System.out.println("Test 170: Node:  " + node);
         // delete this node from our children list:
         this.children.remove(indexOfSubtree);
@@ -160,12 +160,12 @@ public abstract class RelationalAlgebraTree
         this.children.add(indexOfSubtree, insertNode);
 
 
-        System.out.println("Test 170: Children after adding:  " + children);
+        //System.out.println("Test 170: Children after adding:  " + children);
 
         // set the parent correctly:
         insertNode.setParent(this);
 
-        System.out.println("Test 170: insertNode after setting parent  " + insertNode);
+        //System.out.println("Test 170: insertNode after setting parent  " + insertNode);
         // and add the shifted node as child to the inserted node:
         insertNode.addChild(node);
         System.out.println("Test 170: Node added:  " + node);
