@@ -4,7 +4,9 @@ import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class ProjectNode extends RelationalAlgebraTree
 {
     private List<QualifiedField> projections = new ArrayList<>();

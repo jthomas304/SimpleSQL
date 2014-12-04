@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by thangnguyen on 12/2/14.
+ * Edited by thangnguyen on 12/04/14.
  */
+
 public class PushProjectionDown {
     public static void pushProjectionDown(RelationalAlgebraTree root) throws IllegalArgumentException {
         if (root == null) {
@@ -24,7 +25,7 @@ public class PushProjectionDown {
         getAllJoinTypes(root, joinNodes);
         int numberOfJoins = joinNodes.size();
 
-        //Create to 2 lists of condition at a given join node
+        //Create to 2 lists of condition at the given join node
         List<QualifiedField> listCondition1 = new ArrayList<>();
         List<QualifiedField> listCondition2 = new ArrayList<>();
         for (int j = 0; j < numberOfJoins; j++) {

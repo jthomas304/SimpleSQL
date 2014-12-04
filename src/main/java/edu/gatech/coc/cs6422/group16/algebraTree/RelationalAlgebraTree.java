@@ -2,7 +2,9 @@ package edu.gatech.coc.cs6422.group16.algebraTree;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public abstract class RelationalAlgebraTree
 {
     public static boolean RelationNodesIncludeRelation(List<RelationNode> nodes, String relation)

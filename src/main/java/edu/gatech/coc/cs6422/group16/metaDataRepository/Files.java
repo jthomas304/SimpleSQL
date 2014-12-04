@@ -11,6 +11,10 @@ import java.io.LineNumberReader;
  * Time: 3:40 AM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class Files {
     protected String fileName;
     protected String fileFullPath;

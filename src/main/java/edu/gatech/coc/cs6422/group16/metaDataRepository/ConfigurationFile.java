@@ -10,6 +10,10 @@ import java.util.HashMap;
  * Time: 3:50 AM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class ConfigurationFile extends Files {
     private HashMap<ConfigurationType, String> confPars;
     public static String databaseDirectory = "db/";

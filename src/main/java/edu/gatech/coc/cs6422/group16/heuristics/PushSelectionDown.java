@@ -2,12 +2,15 @@ package edu.gatech.coc.cs6422.group16.heuristics;
 
 import edu.gatech.coc.cs6422.group16.algebraTree.*;
 
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class PushSelectionDown
 {
     public static boolean TraverseCartesianProductNode(final SelectNode selNode, RelationalAlgebraTree root)
     {
         boolean change = false;
-        if (root == null)return false;
+        if (root == null) return false;
         CartesianProductNode carProdNode = root.getCurrentNodeAs(CartesianProductNode.class);
         SelectNode selectionNode = root.getCurrentNodeAs(SelectNode.class);
         ProjectNode projectNode = root.getCurrentNodeAs(ProjectNode.class);

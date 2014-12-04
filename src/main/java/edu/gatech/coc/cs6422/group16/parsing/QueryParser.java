@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class QueryParser
 {
     private class QueryParserErrorListener implements ANTLRErrorListener

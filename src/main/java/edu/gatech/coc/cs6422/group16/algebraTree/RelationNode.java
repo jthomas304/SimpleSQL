@@ -4,6 +4,9 @@ import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 
 public class RelationNode extends RelationalAlgebraTree
 {

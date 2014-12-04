@@ -11,6 +11,10 @@ import java.util.Vector;
  * Time: 4:42 AM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class StatisticsFile extends Files {
     private int relationSize;
     private int blockSize;

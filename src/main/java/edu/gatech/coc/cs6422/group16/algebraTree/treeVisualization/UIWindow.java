@@ -3,10 +3,7 @@ package edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization;
 import edu.gatech.coc.cs6422.group16.frontend.CommandLineInterface;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.event.*;
 
 /**
  * Created by Rogue Three on 11/25/2014.
@@ -58,7 +55,7 @@ public class UIWindow extends JFrame {
         leftStats.add(new JLabel("Validation Time:"));
         leftStats.add(new JLabel("Tree Creation Time:"));
         leftStats.add(new JLabel("Optimization Time:"));
-        leftStats.add(new JLabel("Total Processing Time:"));
+        //leftStats.add(new JLabel("Total Processing Time:"));
 
         rightStats.setLayout(new BoxLayout(rightStats, BoxLayout.Y_AXIS));
 
@@ -66,13 +63,13 @@ public class UIWindow extends JFrame {
         valTime = new JLabel();
         treeTime = new JLabel();
         optTime = new JLabel();
-        totTime = new JLabel();
+        //totTime = new JLabel();
 
         rightStats.add(parTime);
         rightStats.add(valTime);
         rightStats.add(treeTime);
         rightStats.add(optTime);
-        rightStats.add(totTime);
+        //rightStats.add(totTime);
 
         stats.add(leftStats);
         stats.add(rightStats);
@@ -120,7 +117,7 @@ public class UIWindow extends JFrame {
         valTime.setText(Long.toString(valid)+" ms");
         treeTime.setText(Long.toString(tree)+" ms");
         optTime.setText(Long.toString(opt)+" ms");
-        totTime.setText(Long.toString(tot)+" ms");
+        //totTime.setText(Long.toString(tot)+" ms");
         revalidate();
     }
 

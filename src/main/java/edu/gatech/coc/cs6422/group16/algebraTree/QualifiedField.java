@@ -3,7 +3,9 @@ package edu.gatech.coc.cs6422.group16.algebraTree;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class QualifiedField extends RelationalAlgebraTree
 {
     private String attribute;
