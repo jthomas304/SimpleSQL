@@ -1,3 +1,6 @@
-Select *
-From Test1, Test2
-Where Test1.A = Test2.B AND Test1.A = "3"
+#PushSelectionDown
+Select TableA.ID
+From TableA, TableB
+Where TableA.ID = TableB.ID
+And TableA.ID = "100"
+And TableA.Name = "Thang"

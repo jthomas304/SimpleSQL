@@ -55,7 +55,8 @@ public class JoinAsSelectNode extends RelationalAlgebraTree
         }
         else
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.evaluateSize();
         }
     }
 

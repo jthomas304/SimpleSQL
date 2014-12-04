@@ -1,5 +1,5 @@
-Select *
-From Test1, Test2, Test3
-Where Test1.A = Test2.B
-And Test2.C = Test3.D
-And Test3.Field = "asdf"
+#PushProjectionDown
+Select TableA.ID, TableB.Name,TableC.Grade,TableB.Grade, TableB.ID, TableC.ID, TableA.Name
+From TableA, TableB, TableC
+Where TableA.ID = TableB.ID
+And TableA.Name = TableC.Name

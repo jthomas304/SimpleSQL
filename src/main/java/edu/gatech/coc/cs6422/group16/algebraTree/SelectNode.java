@@ -37,7 +37,7 @@ public class SelectNode extends RelationalAlgebraTree
                     + this.getChildren().get(0).evaluateSize() + this.getChildren().get(0).evaluateCost());
         }
         return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field)
-        + this.getChildren().get(0).evaluateCost());
+                + this.getChildren().get(0).evaluateSize() + this.getChildren().get(0).evaluateCost());
     }
 
     @Override
