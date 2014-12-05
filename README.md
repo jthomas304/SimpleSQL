@@ -1,6 +1,6 @@
 Project Overview
 =======
-This project has been developed as part of the class "CS 6422: Database System Implementation" at GeorgiaTech in Fall 2013 with professor Liu.
+This is an extention to a project has been developed as part of the class "CS 6422: Database System Implementation" at GeorgiaTech in Fall 2013 with professor Liu.
 
 Setup Project
 =======
@@ -20,7 +20,8 @@ features to build the project using Gradle, the same may not apply to other deve
 Run Project
 =======
 
-Run main in SimpleSQLMain-class, the command-line will open and you can start typing...
+Run main in SimpleSQLMain-class, a UI will appear and you can start typing a SQL query
+
 
 Todo
 =======
@@ -28,4 +29,3 @@ Todo
 * Implement missing parts of Data Manipulation Language (`INSERT/UPDATE/DELETE`)
 * Implement interface for Data Definition Language
 * Implement a proper type system for database catalog
-* Implement actual cost-based optimization, this is currently just a brute-force-approach
