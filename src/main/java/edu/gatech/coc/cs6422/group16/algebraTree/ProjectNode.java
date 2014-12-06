@@ -4,15 +4,27 @@ import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class ProjectNode extends RelationalAlgebraTree
 {
     private List<QualifiedField> projections = new ArrayList<>();
 
     private SelectionType type;
 
+    public ProjectNode(List<QualifiedField> projection, SelectionType type) {
+        this.projections = projection;
+        this.type = type;
+    }
+
+    public ProjectNode() {
+        this.projections = new ArrayList<>();
+        this.type = null;
+    }
     public void addProjection(QualifiedField proj)
     {
+        System.out.println("Test 169: Projection Node: "+ proj);
         this.projections.add(proj);
     }
 
@@ -26,16 +38,20 @@ public class ProjectNode extends RelationalAlgebraTree
         {
             newProject.projections.add(field.copyNode());
         }
-
         return super.copyFields(newProject);
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
-        return childrenCost.get(0);
+        return Math.ceil(this.getChildren().get(0).evaluateCost() +
+                this.getChildren().get(0).evaluateSize());
     }
-
+    @Override
+    public double evaluateSize()
+    {
+        return Math.ceil(this.getChildren().get(0).evaluateSize());
+    }
     @Override
     public String getNodeContent()
     {
@@ -63,8 +79,9 @@ public class ProjectNode extends RelationalAlgebraTree
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            s += "\n" + this.computeCost();
-        }
+            s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.evaluateSize();
+        } else  s += "\n" + "Cost: " + this.computeCost() + " , Size: " + this.evaluateSize();
+
         return s;
     }
 

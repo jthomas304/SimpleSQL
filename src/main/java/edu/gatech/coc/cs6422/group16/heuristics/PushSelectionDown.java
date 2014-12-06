@@ -2,50 +2,53 @@ package edu.gatech.coc.cs6422.group16.heuristics;
 
 import edu.gatech.coc.cs6422.group16.algebraTree.*;
 
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class PushSelectionDown
 {
     public static boolean TraverseCartesianProductNode(final SelectNode selNode, RelationalAlgebraTree root)
     {
         boolean change = false;
+        if (root == null) return false;
         CartesianProductNode carProdNode = root.getCurrentNodeAs(CartesianProductNode.class);
-        if (carProdNode == null)
-        {
-            return change;
-        }
-        RelationalAlgebraTree c1 = carProdNode.getChildren().get(0);
-        RelationalAlgebraTree c2 = carProdNode.getChildren().get(1);
-        //currently ignore multiple selection on a single relation
+        SelectNode selectionNode = root.getCurrentNodeAs(SelectNode.class);
+        ProjectNode projectNode = root.getCurrentNodeAs(ProjectNode.class);
+        if (carProdNode == null && selectionNode ==null && projectNode == null) return false;
+        RelationalAlgebraTree c1 = root.getChildren().get(0);
+        RelationalAlgebraTree c2 = null;
+        if (root.getChildCount() > 1) c2 = root.getChildren().get(1);
         RelationNode relNode;
+
         if (c1 != null)
         {
             if ((relNode = c1.getCurrentNodeAs(RelationNode.class)) != null)
             {
-                //is a relation node
                 if (relNode.getRelation().equals(selNode.getField().getRelation()))
                 {
                     SelectNode newSelNode = new SelectNode(selNode.getField(), selNode.getComparison(),
                             selNode.getValue());
-                    carProdNode.insertNodeInSubtree(0, newSelNode);
+                    root.insertNodeInSubtree(0, newSelNode);
                     change = true;
                 }
             }
-
         }
         if (c2 != null)
         {
             if ((relNode = c2.getCurrentNodeAs(RelationNode.class)) != null)
             {
-                //is a relation node
                 if (relNode.getRelation().equals(selNode.getField().getRelation()))
                 {
                     SelectNode newSelNode = new SelectNode(selNode.getField(), selNode.getComparison(),
                             selNode.getValue());
-                    carProdNode.insertNodeInSubtree(1, newSelNode);
+
+                    root.insertNodeInSubtree(1, newSelNode);
                     change = true;
                 }
             }
         }
-        return change || TraverseCartesianProductNode(selNode, c1) || TraverseCartesianProductNode(selNode, c2);
+        return change || TraverseCartesianProductNode(selNode, c1)
+                || TraverseCartesianProductNode(selNode, c2);
     }
 
     public static void pushSelectionDown(RelationalAlgebraTree root) throws IllegalArgumentException
@@ -63,8 +66,10 @@ public class PushSelectionDown
             System.out.println("Root node must be a project node.");
             return;
         }
+
+
         cur = root.getChildren().get(0);
-        //locate the first SelectNode
+
         while (cur != null && cur.getCurrentNodeAs(SelectNode.class) == null)
         {
             parent = cur;
@@ -78,6 +83,7 @@ public class PushSelectionDown
                 return;
             }
         }
+
         //traverse the following SelectNode, for each of them, check if push-down is available
         while (cur != null && cur.getCurrentNodeAs(SelectNode.class) != null)
         {
@@ -100,6 +106,8 @@ public class PushSelectionDown
             {
                 break;
             }
+
+
             if (TraverseCartesianProductNode(selNode, searchCur))
             {
                 RelationalAlgebraTree tempCur = cur.getChildren().get(0);
@@ -116,4 +124,6 @@ public class PushSelectionDown
             }
         }
     }
+
+
 }

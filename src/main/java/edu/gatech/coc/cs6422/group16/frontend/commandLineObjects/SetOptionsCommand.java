@@ -1,9 +1,9 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionMode;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 
 public class SetOptionsCommand implements ICommandLineObject
 {
@@ -128,6 +128,7 @@ public class SetOptionsCommand implements ICommandLineObject
     public void setCommand(String command)
     {
         options = command.substring(3);
+        System.out.println("Test 143: Options: " + options);
         options = options.trim();
     }
 

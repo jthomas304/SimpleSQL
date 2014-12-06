@@ -1,11 +1,13 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
-
-import edu.gatech.coc.cs6422.group16.algebraTree.*;
+import edu.gatech.coc.cs6422.group16.algebraTree.CartesianProductNode;
+import edu.gatech.coc.cs6422.group16.algebraTree.JoinNode;
+import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.heuristics.CartesianToJoin;
 import edu.gatech.coc.cs6422.group16.heuristics.PushSelectionDown;
+import edu.gatech.coc.cs6422.group16.heuristics.PushProjectionDown;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 import edu.gatech.coc.cs6422.group16.statistics.Statistics;
 import edu.gatech.coc.cs6422.group16.statistics.TimerType;
@@ -26,6 +28,8 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 // trees.get(0) has unoptimized tree, we need to optimize it
                 int numberOfRelationPermutations = trees.size();
 
+
+                SwingRelationAlgebraTree.showInDialog(trees.get(0), "Unoptimized Tree");
                 /*
                 for(int i = 0; i < numberOfRelationPermutations; i++) {
                     SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
@@ -47,7 +51,9 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                 }
                 */
 
-
+                //RelationalAlgebraTree copyIt = trees.get(0).copyNode();
+                //GreedyAlgorithm.TransformViaGreedyAlgorithm(copyIt);
+                //SwingRelationAlgebraTree.showInDialog(copyIt, "Greedy");
 
 
                 // Go through each table order permutation
@@ -55,6 +61,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                     RelationalAlgebraTree singleTree = trees.get(i).copyNode();
                     PushSelectionDown.pushSelectionDown(singleTree);
                     CartesianToJoin.cartesianToJoin(singleTree);
+                    PushProjectionDown.pushProjectionDown(singleTree);
 
                     List<RelationalAlgebraTree> oriJoinNodes = new ArrayList<>();
                     getAllJoinTypes(singleTree, oriJoinNodes);
@@ -65,7 +72,8 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
 
                     List<RelationalAlgebraTree> partialTree = new ArrayList<>();
 
-                    trees.add(singleTree);
+                    //trees.add(singleTree);
+
                     // for each cartesian product node in the unoptimized algebra tree
                     for (int j = 0; j < numberOfJoins; j++) {
                         // k dependent on how many types of joins we implement
@@ -80,19 +88,7 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                 getAllJoinTypes(newCopy, joinNodes);
 
                                 JoinNode temp = joinNodes.get(0).getCurrentNodeAs(JoinNode.class);
-
-                                if (k == 0) {
-                                    temp.replaceNode(temp.toBNLJoin());
-                                }
-                                else if (k == 1) {
-                                    temp.replaceNode(temp.toINLJoin());
-                                }
-                                else if (k == 2) {
-                                    temp.replaceNode(temp.toMJoin());
-                                }
-                                else if (k == 3) {
-                                    temp.replaceNode(temp.toHJoin());
-                                }
+                                temp.replaceNode(temp.toSpecificJoin(k));
                                 //SwingRelationAlgebraTree.showInDialog(newCopy,"Tree" + Integer.toString(k));
                                 partialTree.add(newCopy);
                             }
@@ -105,50 +101,45 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                                     getAllJoinTypes(newCopy, joinNodes);
 
 
-                                    System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
-                                    //SwingRelationAlgebraTree.showInDialog(newCopy, "Tree");
-                                    /*
-                                    for (int wait = 0; wait < 1000; wait++) {
-
-                                    }
-                                    */
-
+                                    //System.out.println("Inner: " + Integer.toString(l) + " Num nodes: " +Integer.toString(joinNodes.size()));
 
                                     JoinNode temp = joinNodes.get(0).getCurrentNodeAs(JoinNode.class);
-
-                                    if (k == 0) {
-                                        temp.replaceNode(temp.toBNLJoin());
-                                    }
-                                    else if (k == 1) {
-                                        temp.replaceNode(temp.toINLJoin());
-                                    }
-                                    else if (k == 2) {
-                                        temp.replaceNode(temp.toMJoin());
-                                    }
-                                    else if (k == 3) {
-                                        temp.replaceNode(temp.toHJoin());
-                                    }
-
+                                    temp.replaceNode(temp.toSpecificJoin(k));
                                     partialTree.add(count, newCopy);
                                     //partialTree.remove(partialTree.get(l));
 
-                                    /*
-                                    if ((j == numberOfJoins-1) && (k == count-1)) {
-                                        partialTree.remove(partialTree.get(l));
-                                    }
-                                    */
+//                                    if ((i == 0) && (j == 1) && (k == 0) && (l == 0)) {
+//                                        SwingRelationAlgebraTree.showInDialog(partialTree.get(l), "Tester1");
+//                                        SwingRelationAlgebraTree.showInDialog(partialTree.get(l).copyNode(), "Copy");
+//                                        SwingRelationAlgebraTree.showInDialog(newCopy, "Tester");
+//                                    }
+
+
                                 }
                             }
 
                         }
 
-                        if (j > 0) {
-                            for (int k = 0; k < count; k++) {
-                                partialTree.remove(partialTree.get(k));
+                        if ((i == 0) && (j == 1)) {
+                            for (int k = 0; k < 4; k++) {
+                                SwingRelationAlgebraTree.showInDialog(partialTree.get(k), "Eraser");
                             }
                         }
 
+                        if (j > 0) {
+
+                            ArrayList<RelationalAlgebraTree> tempList = new ArrayList<>();
+                            for (int k = 0; k < count; k++) {
+                                tempList.add(partialTree.get(k));
+                            }
+                            for (int k = 0; k < tempList.size(); k++) {
+                                partialTree.remove(tempList.get(k));
+                            }
+                        }
+
+
                     }
+
                     trees.addAll(partialTree);
                     /*
                     for (RelationalAlgebraTree aTree : partialTree) {
@@ -157,35 +148,14 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
                     */
                 }
 
-/*
-                RelationalAlgebraTree singleTree = trees.get(0).copyNode();
-                PushSelectionDown.pushSelectionDown(singleTree);
-                CartesianToJoin.cartesianToJoin(singleTree);
-*/
 
-                /*
-                for (int i = 0; i < 3; i++) {
-                    RelationalAlgebraTree singleTree = trees.get(0).copyNode();
-                    if (i == 0) {
-                        PushSelectionDown.pushSelectionDown(singleTree);
-                    }
-                    if (i == 1) {
-                        CartesianToJoin.cartesianToJoin(singleTree);
-                    }
-                    if (i == 2) {
-                        PushSelectionDown.pushSelectionDown(singleTree);
-                        CartesianToJoin.cartesianToJoin(singleTree);
-                    }
-                    stat.addQueryTree(singleTree);
-                }
-                */
                 stat.stop(TimerType.OPTIMIZATION);
 
 
 
                 for(int i = 0; i < trees.size(); i++) {
                     stat.addQueryTree(trees.get(i));
-                    SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
+                    //SwingRelationAlgebraTree.showInDialog(trees.get(i), "Tree" + Integer.toString(i));
                 }
 
 
@@ -201,7 +171,51 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
         }
     }
 
+    @Override
+    public void execute(UIWindow window)
+    {
+        ExecutionConfig config = ExecutionConfig.getInstance();
+        Statistics stat = Statistics.getInstance();
+        stat.start(TimerType.FULL);
+        List<RelationalAlgebraTree> trees = null;
+        try
+        {
+            trees = this.parseTree();
+            System.out.println(" Test 141: parse trees :" + trees);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        MetaDataRepository.GetInstance().ReadData();
+        // only continue on valid trees:
+        if (trees != null)
+        {
+            if (config.isShowVisualTrees() && config.isShowVisualFirstTree())
+            {
+                RelationalAlgebraTree t0 = trees.get(0).copyNode();
+                System.out.println(trees.get(0) + "Test 20");
+                SwingRelationAlgebraTree.showInDialog(t0, "First tree - Unoptimized");
+            }
 
+            optimizeQueries(trees);
+
+            if (config.isShowVisualTrees() && config.isShowVisualFirstTree())
+            {
+                RelationalAlgebraTree t1 = trees.get(0).copyNode();
+                System.out.println(trees.get(0) + "Test 21");
+                SwingRelationAlgebraTree.showInDialog(t1, "First tree - Optimized");
+            }
+
+            stat.stop(TimerType.FULL);
+            stat.updateUI(window);
+            stat.getBestTree(window);
+            stat.print();
+        }
+        System.out.println(" Test 37");
+        // clean-up after we are done:
+        stat.reset();
+    }
     private static void getAllCartTypes(RelationalAlgebraTree current, List<RelationalAlgebraTree> nodeList) {
         if (current.isClass(CartesianProductNode.class))
         {
@@ -222,54 +236,6 @@ public abstract class ProcessQueryCommand implements ICommandLineObject
         {
             getAllJoinTypes(child, nodeList);
         }
-    }
-
-    @Override
-    public void execute(UIWindow window)
-    {
-        ExecutionConfig config = ExecutionConfig.getInstance();
-
-        Statistics stat = Statistics.getInstance();
-        stat.start(TimerType.FULL);
-        List<RelationalAlgebraTree> trees = null;
-        // parseTree creates trees
-        try
-        {
-            trees = this.parseTree();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        MetaDataRepository.GetInstance().ReadData();
-
-        // only continue on valid trees:
-        if (trees != null)
-        {
-            if (config.isShowVisualTrees() && config.isShowVisualFirstTree())
-            {
-                RelationalAlgebraTree t0 = trees.get(0).copyNode();
-                SwingRelationAlgebraTree.showInDialog(t0, "Unoptimized Tree");
-            }
-
-            optimizeQueries(trees);
-
-            /*
-            if (config.isShowVisualTrees() && config.isShowVisualFirstTree())
-            {
-                RelationalAlgebraTree t1 = trees.get(0).copyNode();
-                SwingRelationAlgebraTree.showInDialog(t1, "First tree - Optimized");
-            }
-            */
-
-            stat.stop(TimerType.FULL);
-            stat.updateUI(window);
-            stat.getBestTree(window);
-            stat.print();
-        }
-
-        // clean-up after we are done:
-        stat.reset();
     }
 
     @Override

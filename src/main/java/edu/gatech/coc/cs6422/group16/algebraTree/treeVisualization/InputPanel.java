@@ -2,9 +2,10 @@ package edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization;
 
 import edu.gatech.coc.cs6422.group16.frontend.CommandLineInterface;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 /**

@@ -4,7 +4,9 @@ import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class JoinAsSelectNode extends RelationalAlgebraTree
 {
     private Comparison comparison;
@@ -29,25 +31,34 @@ public class JoinAsSelectNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / max(V(R1, a), V(R2, a))
-        return childrenCost.get(0) / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+        return this.getChildren().get(0).evaluateSize() / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
+                meta.GetDistinctValueOfAttribute(this.condition2)) + this.getChildren().get(0).evaluateCost();
+    }
+    @Override
+    public double evaluateSize()
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        // formula: T(R) = T(S) / max(V(R1, a), V(R2, a))
+        return this.getChildren().get(0).evaluateSize() / Math.max(meta.GetDistinctValueOfAttribute(this.condition1),
                 meta.GetDistinctValueOfAttribute(this.condition2));
     }
-
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n" + this.computeCost();
+            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.evaluateSize();
         }
         else
         {
-            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")";
+            return "\u03c3(" + condition1.toString() + " = " + condition2.toString() + ")\n"
+                    + this.computeCost() + " , " + this.evaluateSize();
         }
     }
 

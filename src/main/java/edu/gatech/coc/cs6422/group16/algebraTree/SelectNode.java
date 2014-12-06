@@ -5,6 +5,10 @@ import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
 
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
+
 public class SelectNode extends RelationalAlgebraTree
 {
     private Comparison comparison;
@@ -28,11 +32,27 @@ public class SelectNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
         // formula: T(R) = T(S) / V(S, a)
-        return childrenCost.get(0) / (double) meta.GetDistinctValueOfAttribute(this.field);
+        if (this.comparison != Comparison.EQUAL) {
+            return Math.ceil(this.getChildren().get(0).evaluateSize() / 3
+                    + this.getChildren().get(0).evaluateSize() + this.getChildren().get(0).evaluateCost());
+        }
+        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field)
+                + this.getChildren().get(0).evaluateSize() + this.getChildren().get(0).evaluateCost());
+    }
+
+    @Override
+    public double evaluateSize()
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        if (this.comparison != Comparison.EQUAL) {
+            return Math.ceil(this.getChildren().get(0).evaluateSize() / 3);
+        }
+        // formula: T(R) = T(S) / V(S, a)
+        return Math.ceil(this.getChildren().get(0).evaluateSize() / (double) meta.GetDistinctValueOfAttribute(this.field));
     }
 
     @Override
@@ -42,11 +62,12 @@ public class SelectNode extends RelationalAlgebraTree
         if (config.isShowCostsInVisualTree())
         {
             return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
-                    this.computeCost();
+                    "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
         else
         {
-            return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")";
+            return "\u03c3(" + this.field.toString() + " " + this.comparison.toString() + " " + this.value + ")\n" +
+                    "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
     }
 

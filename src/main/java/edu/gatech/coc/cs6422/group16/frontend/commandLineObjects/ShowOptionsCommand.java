@@ -1,7 +1,7 @@
 package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 
 public class ShowOptionsCommand implements ICommandLineObject
 {

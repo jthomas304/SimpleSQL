@@ -3,7 +3,9 @@ package edu.gatech.coc.cs6422.group16.algebraTree;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class QualifiedField extends RelationalAlgebraTree
 {
     private String attribute;
@@ -23,11 +25,15 @@ public class QualifiedField extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         return 0;
     }
-
+    @Override
+    public double evaluateSize()
+    {
+        return 0;
+    }
     @Override
     public String getNodeContent()
     {

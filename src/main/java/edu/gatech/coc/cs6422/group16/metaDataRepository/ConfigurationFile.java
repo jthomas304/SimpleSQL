@@ -1,9 +1,6 @@
 package edu.gatech.coc.cs6422.group16.metaDataRepository;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.util.HashMap;
 
 /**
@@ -12,6 +9,10 @@ import java.util.HashMap;
  * Date: 10/31/13
  * Time: 3:50 AM
  * To change this template use File | Settings | File Templates.
+ */
+
+/*
+ * Edited by thangnguyen 12/04/2014
  */
 public class ConfigurationFile extends Files {
     private HashMap<ConfigurationType, String> confPars;
@@ -134,22 +135,28 @@ public class ConfigurationFile extends Files {
     //static methods used to generate file name patterns
 
     public static String GenDatabaseInfoFileName(String name) {
-        if(name == null || name.trim().isEmpty())
-            return "database.ind";
+        if (name == null || name.trim().isEmpty()) {
+            System.out.println("Test 120- ConfigurationFile - Generate Database Info File Name");
+            //return "test.ind";}
+            return "database.ind";}
         else
             return name + ".ind";
     }
 
     public static String GenDatabaseDirectory(String name) {
-        if(name == null || name.trim().isEmpty())
-            return databaseDirectory + "database/";
+        if(name == null || name.trim().isEmpty()) {
+            System.out.println("Test 120- ConfigurationFile - Generate Database Directory");
+            //return databaseDirectory + "test/";}
+            return databaseDirectory + "database/";}
         else
             return databaseDirectory + name + "/";
     }
 
     public static String GenDatabaseInfoFileFullPath(String name) {
-        if(name == null || name.trim().isEmpty())
-            return databaseDirectory + "database.ind";
+        if(name == null || name.trim().isEmpty()) {
+            System.out.println("Test 120- ConfigurationFile - Generate Database Information File Full Path");
+            //return databaseDirectory + "test.ind";}
+            return databaseDirectory + "database.ind";}
         else
             return databaseDirectory + GenDatabaseInfoFileName(name);
     }

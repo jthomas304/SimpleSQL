@@ -2,8 +2,8 @@ package edu.gatech.coc.cs6422.group16.frontend.commandLineObjects;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 import edu.gatech.coc.cs6422.group16.frontend.CommandLineInterface;
+import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.UIWindow;
 
 import java.io.File;
 import java.io.IOException;

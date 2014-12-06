@@ -1,9 +1,13 @@
 #list of relations
-TableA, TableB
+TableA, TableB, TableC, TableE
 
 #start of relation declaration
 #first one
-ID:String:PRIMARY, Name:String, Grade:Int
+Block:Int, ID:String:PRIMARY, Name:String, Grade:Int
 #second one
-ID:String, Name:String, Grade:Int   
+Block:Int, ID:String, Name:String, Grade:Int
+#third one
+Block:Int, ID:String, Name:String, Grade:Int
+#fourth one
+Block:Int, ID:String, Name:String, Grade:Int
 

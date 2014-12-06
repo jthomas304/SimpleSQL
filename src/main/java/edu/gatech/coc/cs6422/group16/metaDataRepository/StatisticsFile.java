@@ -11,8 +11,13 @@ import java.util.Vector;
  * Time: 4:42 AM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public class StatisticsFile extends Files {
     private int relationSize;
+    private int blockSize;
     private HashMap<String, Integer> distinctValues;
 
     public StatisticsFile(String dbName, String relName, Vector<AttributeInfo> attrInfo) {
@@ -22,6 +27,7 @@ public class StatisticsFile extends Files {
         else
             distinctValues.clear();
         relationSize = 0;
+        blockSize = 0;
         ReadFile(attrInfo);
     }
 
@@ -45,18 +51,24 @@ public class StatisticsFile extends Files {
                         throw new IndexOutOfBoundsException(msg);
                     }
                     relationSize = Integer.valueOf(parts[0].trim());
-                    for(int j = 0; j < attrInfo.size(); j++ ) {
+                    blockSize = Integer.valueOf(parts[1].trim());
+                    System.out.println("Test 125: block size of this relation is: "+ blockSize);
+                    for(int j = 1; j < attrInfo.size(); j++ ) {
                         distinctValues.put(attrInfo.elementAt(j).GetAttribute(), Integer.valueOf(parts[j+1].trim()));
+                        System.out.println("Test 125: Number of distinct values of this attribute is: "+
+                                distinctValues.get(attrInfo.elementAt(j).GetAttribute()));
                     }
                 }
             } catch (IOException E)
             {
                 System.out.println("Error parsing line " + fileLineReader.getLineNumber() + " from configuration file " + fileName + ".");
                 relationSize = 0;
+                blockSize = 0;
                 distinctValues.clear();
             } catch (IndexOutOfBoundsException E) {
                 System.out.println(E.getMessage());
                 relationSize = 0;
+                blockSize = 0;
                 distinctValues.clear();
             }
         }
@@ -69,10 +81,16 @@ public class StatisticsFile extends Files {
         else if(distinctValues.get(attrName) == null)
             return 0;
         else
+
+            System.out.println(distinctValues.get(attrName) + " " + attrName + " Test 82");
             return distinctValues.get(attrName);
     }
 
     public int GetRelationSize() {
         return relationSize;
+    }
+
+    public int GetBlockSize() {
+        return blockSize;
     }
 }

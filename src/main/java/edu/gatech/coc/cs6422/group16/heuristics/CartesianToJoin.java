@@ -56,7 +56,7 @@ public class CartesianToJoin
     }
 
     private static <T extends RelationalAlgebraTree> void getAllNodesOfType(RelationalAlgebraTree current,
-            Class<? extends T> classType, List<T> nodeList)
+                                                                            Class<? extends T> classType, List<T> nodeList)
     {
         if (current.isClass(classType))
         {
@@ -81,7 +81,7 @@ public class CartesianToJoin
     }
 
     private static RelationalAlgebraTree searchNextCartesianProductNode(RelationalAlgebraTree start,
-            List<RelationalAlgebraTree> markedNodes)
+                                                                        List<RelationalAlgebraTree> markedNodes)
     {
         // loop all children, calling recursively, resulting in a depth-first-search:
         for (RelationalAlgebraTree child : start.getChildren())

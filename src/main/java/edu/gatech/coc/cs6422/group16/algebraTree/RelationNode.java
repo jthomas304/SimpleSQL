@@ -4,6 +4,9 @@ import edu.gatech.coc.cs6422.group16.executionConfiguration.ExecutionConfig;
 import edu.gatech.coc.cs6422.group16.metaDataRepository.MetaDataRepository;
 
 import java.util.List;
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 
 public class RelationNode extends RelationalAlgebraTree
 {
@@ -21,23 +24,31 @@ public class RelationNode extends RelationalAlgebraTree
     }
 
     @Override
-    public double evaluateCost(List<Double> childrenCost)
+    public double evaluateCost()
     {
         MetaDataRepository meta = MetaDataRepository.GetInstance();
-        return meta.GetRelationSize(this.relation);
+        return 0;
+        //return Math.ceil(meta.GetRelationSize(this.relation));
+        //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
     }
-
+    @Override
+    public double evaluateSize()
+    {
+        MetaDataRepository meta = MetaDataRepository.GetInstance();
+        return Math.ceil(meta.GetRelationSize(this.relation));
+        //return meta.GetRelationSize(this.relation)/meta.GetBlockSize(this.relation);
+    }
     @Override
     public String getNodeContent()
     {
         ExecutionConfig config = ExecutionConfig.getInstance();
         if (config.isShowCostsInVisualTree())
         {
-            return this.getRelation() + "\n" + this.computeCost();
+            return this.getRelation() + "\n" + "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
         else
         {
-            return this.getRelation();
+            return this.getRelation() + "\n" + "Cost: " + this.computeCost() + " ,Size: " + this.evaluateSize();
         }
     }
 
@@ -47,6 +58,7 @@ public class RelationNode extends RelationalAlgebraTree
         if (RelationNodesIncludeRelation(relationNodes, this.relation))
         {
             MetaDataRepository meta = MetaDataRepository.GetInstance();
+            System.out.println(this.relation + " Test 29");
             if (meta.IsRelationValid(this.relation))
             {
                 return true;

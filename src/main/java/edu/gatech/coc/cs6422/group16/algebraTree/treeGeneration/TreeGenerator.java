@@ -3,7 +3,6 @@ package edu.gatech.coc.cs6422.group16.algebraTree.treeGeneration;
 import edu.gatech.coc.cs6422.group16.algebraTree.CartesianProductNode;
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationNode;
 import edu.gatech.coc.cs6422.group16.algebraTree.RelationalAlgebraTree;
-import edu.gatech.coc.cs6422.group16.algebraTree.treeVisualization.SwingRelationAlgebraTree;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -69,30 +68,22 @@ public class TreeGenerator
         {
             // "relations.size() - 1" because of n leave nodes for n-1 intermediate nodes!
             List<RelationalAlgebraTree> treeNodes = generateTrees(relations.size() - 1);
-
             List<List<RelationNode>> permutations = permute(relations);
-            /*
+
             if (permutationK >= 1)
             {
                 treeNodes = treeNodes.subList(0, Math.min(treeK, treeNodes.size()));
                 permutations = permutations.subList(0, Math.min(permutationK, permutations.size()));
             }
-            */
             for (RelationalAlgebraTree root : treeNodes)
             {
-
                 for (List<RelationNode> permutation : permutations)
                 {
                     RelationalAlgebraTree copyRoot = root.copyNode();
                     fillInLeaves(new LinkedList<>(permutation), copyRoot);
-                    //SwingRelationAlgebraTree.showInDialog(copyRoot,"Tree");
                     trees.add(copyRoot);
+                    System.out.println("Test 159 | Copy root: " + copyRoot);
                 }
-                /*
-                RelationalAlgebraTree copyRoot = root.copyNode();
-                fillInLeaves(new LinkedList<>(permutations.get(0)), copyRoot);
-                trees.add(copyRoot);
-                */
             }
         }
         else if (relations.size() == 1)
@@ -134,7 +125,6 @@ public class TreeGenerator
                         newTree.addChild(left);
                         newTree.addChild(right);
 
-                        //SwingRelationAlgebraTree.showInDialog(newTree,"Tree");
                         trees.add(newTree);
                     }
                 }

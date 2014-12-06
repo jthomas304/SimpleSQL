@@ -94,11 +94,11 @@ public class CommandLineInterface
             System.out.println("Enter your query:");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
             try
             {
                 System.out.print("> ");
                 String command = reader.readLine();
+                System.out.println(command);
                 alive = processString(command);
             }
             catch (IOException e)

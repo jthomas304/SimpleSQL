@@ -2,12 +2,17 @@ package edu.gatech.coc.cs6422.group16.algebraTree;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
 public abstract class RelationalAlgebraTree
 {
     public static boolean RelationNodesIncludeRelation(List<RelationNode> nodes, String relation)
-    {
+    {   //Boolean to check whether the relation is found or not
         boolean relationFound = false;
+
+        //RelationNode is a list of Node
+        //What is Node?
         for (RelationNode node : nodes)
         {
             if (node.getRelation().equals(relation))
@@ -37,7 +42,8 @@ public abstract class RelationalAlgebraTree
 
     public abstract RelationalAlgebraTree copyNode();
 
-    public abstract double evaluateCost(List<Double> childrenCost);
+    public abstract double evaluateCost();
+    public abstract double evaluateSize();
 
     public abstract String getNodeContent();
 
@@ -46,6 +52,7 @@ public abstract class RelationalAlgebraTree
     public void addChild(RelationalAlgebraTree node)
     {
         children.add(node);
+        //System.out.println(node + " Test 107");
         node.setParent(this);
     }
 
@@ -56,13 +63,22 @@ public abstract class RelationalAlgebraTree
         {
             childrenCost.add(c.computeCost());
         }
-        double ownCost = this.evaluateCost(childrenCost);
+        double ownCost = this.evaluateCost();
         double childCost = 0;
+
         for (Double c : childrenCost)
         {
             childCost += c;
         }
-        return ownCost + childCost;
+        childCost = 0;
+
+        System.out.println(
+                "Test 112: \n" + "This relation: " + this
+                + "\n This Children" + this.children
+                + "\n Own Cost: " + ownCost
+                + "\n Child Cost" + childCost);
+
+        return Math.ceil(ownCost + childCost);
     }
 
     public RelationalAlgebraTree copyFields(RelationalAlgebraTree other)
@@ -78,9 +94,10 @@ public abstract class RelationalAlgebraTree
     {
         // save parent in time:
         RelationalAlgebraTree parent = this.parent;
+        System.out.println("Test 161 | Parent Node :" + parent);
         // first, remove ourself from the children list of the parent:
         this.parent.removeChild(this);
-
+        System.out.println("Test 161 | The remove Node" + this);
         // add all this children to the parent
         for (RelationalAlgebraTree child : children)
         {
@@ -119,16 +136,25 @@ public abstract class RelationalAlgebraTree
     {
         // first get the child that will be pushed down:
         RelationalAlgebraTree node = this.children.get(indexOfSubtree);
+        //System.out.println("Test 170: insertNode:  " + insertNode);
+        System.out.println("Test 170: Node:  " + node);
         // delete this node from our children list:
         this.children.remove(indexOfSubtree);
-
+        System.out.println("Test 170: Children after removing:  " + children);
         // now insert the new node:
         this.children.add(indexOfSubtree, insertNode);
 
+
+        //System.out.println("Test 170: Children after adding:  " + children);
+
         // set the parent correctly:
         insertNode.setParent(this);
+
+        //System.out.println("Test 170: insertNode after setting parent  " + insertNode);
         // and add the shifted node as child to the inserted node:
         insertNode.addChild(node);
+        System.out.println("Test 170: Node added:  " + node);
+        System.out.println("Test 170: insertNode after adding:  " + insertNode);
     }
 
     public boolean isClass(Class classType)

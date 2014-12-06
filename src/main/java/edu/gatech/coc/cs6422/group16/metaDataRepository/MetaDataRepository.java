@@ -3,12 +3,7 @@ package edu.gatech.coc.cs6422.group16.metaDataRepository;
 
 import edu.gatech.coc.cs6422.group16.algebraTree.QualifiedField;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.LineNumberReader;
 import java.util.HashMap;
-import java.io.*;
-import java.util.Vector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +12,11 @@ import java.util.Vector;
  * Time: 3:00 PM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * Edited by thangnguyen 12/04/2014
+ */
+
 public class MetaDataRepository {
     //configuration file
     private ConfigurationFile configFile;
@@ -131,6 +131,17 @@ public class MetaDataRepository {
     public int GetDistinctValueOfAttribute(QualifiedField field) {
         return GetDistinctValueOfAttribute(field.getRelation(), field.getAttribute());
     }
+    public int GetNumberBlock(QualifiedField field) {
+        return GetNumberBlock(field.getRelation(), field.getAttribute());
+    }
+
+    public int GetNumberBlock(String rel, String attr) {
+        if(statisticsFile.get(rel) == null)
+            return 0;
+        else
+            return statisticsFile.get(rel).GetRelationSize()/statisticsFile.get(rel).GetBlockSize();
+
+    }
 
     public int GetDistinctValueOfAttribute(String rel, String attr) {
         if(statisticsFile.get(rel) == null)
@@ -148,4 +159,11 @@ public class MetaDataRepository {
             return statisticsFile.get(rel).GetRelationSize();
     }
 
+    public int GetBlockSize(String rel) {
+
+        if(statisticsFile.get(rel) == null)
+            return 0;
+        else
+            return statisticsFile.get(rel).GetBlockSize();
+    }
 }
